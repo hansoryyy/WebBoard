@@ -2,9 +2,9 @@
 <%@ page session="false" %>
 <html>
 <head>
-	<script type="text/javascript" src="/webboard/resources/js/jquery-3.3.1.min.js"></script>
-	<script type="text/javascript" src="/webboard/resources/js/bootstrap.min.js"></script>
-	<link href="/webboard/resources/css/bootstrap.css" rel="stylesheet">
+	<script type="text/javascript" src="/resources/js/jquery-3.3.1.min.js"></script>
+	<script type="text/javascript" src="/resources/js/bootstrap.min.js"></script>
+	<link href="/resources/css/bootstrap.css" rel="stylesheet">
 	
 	<title>Home</title>
 </head>
