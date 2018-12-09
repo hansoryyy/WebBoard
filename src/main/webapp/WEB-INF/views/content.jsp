@@ -16,15 +16,15 @@
 </script>
 </head>
 <body>
-<c:if test="${not empty content}">
-	<h3><c:out value="${content.title}"/></h3>
-	<p><c:out value="${content.content}"/></p>
+<c:if test="${not empty postView}">
+	<h3><c:out value="${postView.title}"/></h3>
+	<p><c:out value="${postView.content}"/></p>
 	<form id="delForm" action="${pageContext.request.contextPath}/delete" method="post">
-		<input type="hidden"  value="${content.seq}" name="pnum"></input>
+		<input type="hidden"  value="${postView.seq}" name="pnum"></input>
 		<button type="submit">삭제</button>
 	</form>
 </c:if>
-<c:if test="${empty content}">
+<c:if test="${empty postView}">
 	글이없음.
 </c:if>
 

@@ -2,17 +2,15 @@
 <%@ page session="false" %>
 <html>
 <head>
-	<script type="text/javascript" src="/resources/js/jquery-3.3.1.min.js"></script>
-	<script type="text/javascript" src="/resources/js/bootstrap.min.js"></script>
-	<link href="/resources/css/bootstrap.css" rel="stylesheet">
+	<%@include file="/WEB-INF/views/include/incResource.jspf" %>
 	
 	<title>Home</title>
 </head>
 <body>
-<h1>
-	Hello world!  
-</h1>
-
-<P>  The time on the server is ${serverTime}. </P>
+	<!--상단 고정된 헤더 -->
+	<%@include file="/WEB-INF/views/include/header.jspf" %>
+	
+	<!--하단고정된 푸터 -->
+	<%@include file="/WEB-INF/views/include/footer.jspf" %>
 </body>
 </html>
