@@ -14,14 +14,14 @@ public class BoardServiceImpl implements IBoardService {
 	
 	
 	@Override
-	public List<PostDTO> findAll() {
-		return postDAO.findAll();
+	public List<PostDTO> selectPostList() {
+		return postDAO.selectPostList();
 	}
 
 	@Override
-	public PostDTO getContent(Integer pnum) {
+	public PostDTO postView(Integer pnum) {
 		
-		return postDAO.findPost(pnum);
+		return postDAO.postView(pnum);
 	}
 
 	@Override

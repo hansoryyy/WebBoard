@@ -20,7 +20,9 @@ public interface IBoardService {
      * 	
      * @return
      */
-	List<PostDTO> findAll();
+	List<PostDTO> selectPostList();
+	
+	PostDTO postView(Integer pnum);
 	/*
 	void insert(PostDTO p );
 	
@@ -33,7 +35,7 @@ public interface IBoardService {
 	 * @param pnum
 	 * @return
 	 */
-	PostDTO getContent(Integer pnum);
+	
 	/**
 	 * 글삭제
 	 * @param pnum

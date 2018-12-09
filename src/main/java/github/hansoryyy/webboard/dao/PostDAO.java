@@ -16,12 +16,12 @@ public class PostDAO {
 	// @Resource(name="session") SqlSession session; // 등록된 bean에서 id값으로 찾기
 	@Autowired SqlSession session;	//SqlSession 타입으로 찾음
 
-	public List<PostDTO> findAll() {
-		return session.selectList("PostMapper.findAll");	//mapper namespace, query id
+	public List<PostDTO> selectPostList() {
+		return session.selectList("PostMapper.selectPostList");	//mapper namespace, query id
 	}
 
-	public PostDTO findPost(Integer pnum) {
-		return session.selectOne("PostMapper.findPost", pnum);
+	public PostDTO postView(Integer pnum) {
+		return session.selectOne("PostMapper.postView", pnum);
 	}
 	
 	
