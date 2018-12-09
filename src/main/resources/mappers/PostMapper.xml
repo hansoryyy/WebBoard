@@ -5,7 +5,7 @@
 	<!--
 		PostDTO p = new PostDTO();
 	 -->
-	<select id="findAll" resultType="github.hansoryyy.webboard.dto.PostDTO">
+	<select id="selectPostList" resultType="github.hansoryyy.webboard.dto.PostDTO">
 		SELECT
 			seq,
 			title,
@@ -16,7 +16,7 @@
 		
 	</select>
 	
-	<select id="findPost" parameterType="int" resultType="github.hansoryyy.webboard.dto.PostDTO">
+	<select id="postView" parameterType="int" resultType="github.hansoryyy.webboard.dto.PostDTO">
 		SELECT
 			seq,
 			title,
