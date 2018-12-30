@@ -42,8 +42,21 @@ public class MemberController {
 		res.put("user", dto);
 		
 		return res;
-		
 		// ["dkdkd" ,"kwekk " , , ]
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/member/memberCheck", method=RequestMethod.GET)
+	public Object memberIdCheck(@RequestParam String prop, @RequestParam String value ) {
+		
+		int existId = memberService.memberCheck(prop, value);
+		Map<String, Object> res = new HashMap<>();
+		if(existId > 0) {
+			res.put("existId", "DUP_VALUE" ); // "INVALID_FORM"
+		}else {
+			res.put("existId", "0");
+		}
+		return res;
 	}
 	
 

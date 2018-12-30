@@ -16,5 +16,15 @@ public class MemberServiceImpl implements IMemberService {
 		memberDAO.memberJoin(dto);
 	}
 
+	@Override
+	public int memberCheck(String prop, String value) {
+		int cnt = memberDAO.memberCheck(prop, value );
+		if(cnt>0) {
+			return 1;
+		}else {
+			return 0;
+		}
+	}
+
 
 }

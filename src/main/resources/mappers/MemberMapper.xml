@@ -3,25 +3,31 @@
 <mapper namespace="MemberMapper">
 
 	<insert id="memberJoin" parameterType="github.hansoryyy.webboard.dto.MemberDTO">
-		insert 
-		into member
-		(
-		login_id,
-		login_pw,
-		nickname,
-		email) 
+		INSERT 
+		INTO member
+			(
+				login_id,
+				login_pw,
+				nickname,
+				email
+			) 
 		values
-		(
-		 #{loginId},
-		 #{loginPw},
-		 #{nickname},
-		 #{email}
-		)
-			
-	
-	
-	
+			(
+				 #{loginId},
+				 #{loginPw},
+				 #{nickname},
+				 #{email}
+			)
 	</insert>
+	
+	<select id="memberCheck" parameterType="Map" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM
+			member
+		WHERE
+			${prop} = #{value}
+	</select>
 
 
 
