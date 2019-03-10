@@ -19,12 +19,23 @@ public class MemberDAO {
 		session.insert("memberJoin", dto);
 	}
 
-	public int memberCheck(String prop, String value) {
+	public int checkMmember(String prop, String value) {
 		Map<String, Object> param = new HashMap<>();
 		param.put("prop", Util.camelToSnake(prop)); // lginId -> login_id
 		param.put("value", value);
 		int cnt = session.selectOne("memberCheck", param);
 		return cnt;
 	}
+	
+	public void checkAdmin(String prop, String value) {
+		;
+	}
 
+	public MemberDTO selectLoginInfo(String loginId, String loginPasswd) {
+		Map<String, Object> param = new HashMap<>();
+		param.put("loginId", loginId); // lginId -> login_id
+		param.put("loginPasswd", loginPasswd);
+		MemberDTO dto = session.selectOne("selectLoginInfo", param);
+		return dto;
+	}
 }

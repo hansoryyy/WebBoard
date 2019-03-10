@@ -1,4 +1,4 @@
-package github.hansoryyy.webboard.service;
+/*package github.hansoryyy.webboard.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import github.hansoryyy.webboard.dto.PostDTO;
-/**
+*//**
  * IXXX
  *    -> IXXXImpl
  *    
@@ -14,7 +14,7 @@ import github.hansoryyy.webboard.dto.PostDTO;
  *     -> Xml
  * @author Kizuna
  *
- */
+ *//*
 
 public class FakeBoardService implements IBoardService {
 
@@ -34,9 +34,9 @@ public class FakeBoardService implements IBoardService {
 
 	@Override
 	public PostDTO getContent(Integer pnum) {
-		/*
+		
 		 * zerobase index : 
-		 */
+		 
 		for(int i=0; i<fakes.size(); i++) { // [ 0, 1, 2, 3, 4]
 			if(fakes.get(i).getSeq() == pnum) {
 				return fakes.get(i);
@@ -57,3 +57,4 @@ public class FakeBoardService implements IBoardService {
 		
 	}
 }
+*/

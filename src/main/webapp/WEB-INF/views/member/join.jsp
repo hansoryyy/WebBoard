@@ -1,27 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ page session="false" %>
+
 <html>
 <head>
 	<%@include file="/WEB-INF/views/include/incResource.jspf" %>
 	
 	<title>회원가입</title>
 <style type="text/css">
-.field .error-msg, .field .success-msg {
-	display:none;
-}
-.field.error .error-msg, .field.success .success-msg {
-	display:inline;
-}
-
-.field.success label {
-	color:#84ae44 !important;
-}
-.field.success input {
-	background: #f4ffdf !important;
-    border-color: #c8fb2b !important;
-    color: #84ae44 !important;
-}
+.field .error-msg, .field .success-msg {display:none;}
+.field.error .error-msg, .field.success .success-msg {display:inline;}
+.field.success label {color:#84ae44 !important;}
+.field.success input {background: #f4ffdf !important;border-color: #c8fb2b !important;color: #84ae44 !important}
 </style>
 <script type="text/javascript">
 
@@ -41,7 +30,7 @@
 		email : null
 	}
 	
-	function sendForm(){
+	function sendForm(e){
 		// valid.loginId , vaild['loginId'] 
 		for( var k in valid ) { 
 			if ( !valid[k] ) {
@@ -50,18 +39,30 @@
 			}
 		}
 		
+		e.preventDefault();
 		var data = $('#joinForm').serialize();
 		$.ajax({
 			url : "/member/memberJoin",
 			method : "POST" ,
 			data : data,
 			success : function(res){
-				console.log(res);
+				if (res.success) {
+					alert('가입에 성공했습니다.');
+				} else {
+					alert('가입에 실패했습니다.');
+				}
 			}
 		});
+		return false;
 	}
 	
 	function _enableForm(){
+		for( var k in valid ) { 
+			if ( !valid[k] ) {
+				// alert ('폼 검증해주세요');
+				return;
+			}
+		}
 		$('#btn_join').on('click', sendForm);
 	}
 	
@@ -79,12 +80,13 @@
 		}
 		$(selector).parent().removeClass('success');
 		$(selector).parent().addClass('error');
-		// _disableForm();
+		_disableForm();
 	}
 	
 	function enableForm(selector) {
 		$(selector).parent().removeClass('error');
 		$(selector).parent().addClass('success');
+		_enableForm();
 	}
 	
 	function checkUnique( propName, value, errorCallback, successCallback, $el) {
@@ -146,7 +148,7 @@
 			$('#nickname') );
 		});
 		
-		$('#email').change(function () {
+		var fnEmail = function () {
 			var val = $('#email').val();
 			checkUnique ( 'email', val, function(errorCode) {
 				disableForm('#email', errorCode);
@@ -154,7 +156,10 @@
 				enableForm('#email');
 			},
 			$('#email') );
-		});
+		};
+		
+		$('#email').change(fnEmail);
+		$('#email').on('blur',fnEmail);
 		
 		
 		$('#loginPw, #loginPw2').change(function () {
@@ -164,16 +169,20 @@
 			if(loginPw !== loginPw2 ){
 				disableForm('#loginPw', 'DIFF_PW');
 				disableForm('#loginPw2');
+				valid['password'] = false;
 			}else if(loginPw.length <= 5 ){
 				disableForm('#loginPw', 'SHORT_PW');
+				valid['password'] = false;
 			}else{
 				enableForm('#loginPw');
 				enableForm('#loginPw2');
+				// valid.password = true;
+				valid['password'] = true;
 			}
 		});
 		
 		//회원가입 버튼 클릭시
-		$('#btn_join').click(sendForm);
+		// $('#btn_join').click(sendForm);
 
 	});
 	
@@ -184,7 +193,7 @@
 	<!--상단 고정된 헤더 -->
 	<%@include file="/WEB-INF/views/include/header.jspf" %>
 	<!--중앙 몸통 시작 -->
-		<div class="ui main text container">
+		<div class="ui main text container" style="padding : 10px 0 0 0 ">
 			<form class="ui form" id="joinForm">
 				  <h4 class="ui dividing header">회원가입</h4>
 			      <div class="field">

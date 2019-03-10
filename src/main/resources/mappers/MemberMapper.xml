@@ -14,12 +14,11 @@
 		values
 			(
 				 #{loginId},
-				 #{loginPw},
+				 PASSWORD(#{loginPw}),
 				 #{nickname},
 				 #{email}
 			)
 	</insert>
-	
 	<select id="memberCheck" parameterType="Map" resultType="int">
 		SELECT
 			COUNT(*)
@@ -27,6 +26,21 @@
 			member
 		WHERE
 			${prop} = #{value}
+	</select>
+	
+	<select id ="selectLoginInfo" parameterType="Map" resultType = "github.hansoryyy.webboard.dto.MemberDTO">
+		SELECT
+			login_id AS loginId,
+			nickname,
+			email
+		FROM
+			member
+		WHERE
+			login_id = #{loginId} AND
+			login_pw = PASSWORD(#{loginPasswd})
+			
+			
+	
 	</select>
 
 

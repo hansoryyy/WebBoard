@@ -25,24 +25,15 @@ public class MemberController {
 	@ResponseBody
 	@RequestMapping(value="/member/memberJoin", method=RequestMethod.POST)
 	public Object memberJoin(MemberDTO dto) throws JsonProcessingException {
-		
+		String smalLetterlPw = dto.getLoginPw().toLowerCase();	
+		dto.setLoginPw(smalLetterlPw);//대소문자 구분하지 않음
 		memberService.memberJoin(dto);
-		/*
-		ObjectMapper om = new ObjectMapper();
-		
-		Map<String, Object> res = new HashMap<>();
-		res.put("success", true);
-		
-		String json = om.writeValueAsString(res); // {"succcess", true}
-		return json;
-		*/
-		
+	
 		Map<String, Object> res = new HashMap<>();
 		res.put("success", true);
 		res.put("user", dto);
 		
 		return res;
-		// ["dkdkd" ,"kwekk " , , ]
 	}
 	
 	@ResponseBody
@@ -52,12 +43,14 @@ public class MemberController {
 		int existId = memberService.memberCheck(prop, value);
 		Map<String, Object> res = new HashMap<>();
 		if(existId > 0) {
-			res.put("existId", "DUP_VALUE" ); // "INVALID_FORM"
+			res.put("existId", "DUP_VALUE" ); // {"existId": "INVALID_FORM"}
 		}else {
 			res.put("existId", "0");
 		}
 		return res;
 	}
+	
+	
 	
 
 }
