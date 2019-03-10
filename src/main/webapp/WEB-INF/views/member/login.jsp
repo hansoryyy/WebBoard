@@ -14,25 +14,38 @@
   </style>
   <script>
  
+  function processLogin(e){
+	  e.preventDefault();
+	  // loginId=12222&loginPw=3333
+	$.ajax({
+		type : "post",
+		url : "/member/loginAction",
+		data : {
+			loginId : $('#loginId').val(),
+			loginPasswd : $('#loginPasswd').val()
+		},
+		success : function(res){
+			console.log(res);
+			if(res.success){
+				location.replace("/");
+			}
+		}
+	});
+	return false;
+  }
+	
   $(document).ready(function() {
 	  
-	  $('#btn_login').click(function(e){
-		  e.preventDefault();
-		  // loginId=12222&loginPw=3333
-		$.ajax({
-			type : "post",
-			url : "/member/loginAction",
-			data : $('.ui.form').serialize(),
-			success : function(res){
-				console.log(res);
-				if(res.success){
-					location.replace("/");
-				}
-			}
-		}); 
-		 
-		 return false;
-	  });
+	  $('#btn_login').click(processLogin); 
+  
+  	  $('div.ui.form input').on('keyup', function(e) {
+  		  // console.log(e.target.value);
+  		  e.preventDefault();
+  		  if ( e.keyCode === 13) {
+  			  processLogin(e);
+  		  }
+  		  return false;
+  	  });
 	  
       $('.ui.form')
         .form({
@@ -84,18 +97,18 @@
 		        	로그인을 해주세요 ! 
 		      </div>
 		    </h2>
-		    <form class="ui large form" action="/member/loginAction" method="post">
+		    <div class="ui large form">
 		      <div class="ui stacked segment">
 		        <div class="field">
 		          <div class="ui left icon input">
 		            <i class="user icon"></i>
-		            <input type="text" name="loginId" placeholder="ID를 입력해주세요 ! ">
+		            <input type="text" name="loginId" id="loginId" placeholder="ID를 입력해주세요 ! ">
 		          </div>
 		        </div>
 		        <div class="field">
 		          <div class="ui left icon input">
 		            <i class="lock icon"></i>
-		            <input type="password" name="loginPasswd" placeholder="비밀번호를 입력해주세요 ! ">
+		            <input type="password" name="loginPasswd" id="loginPasswd" placeholder="비밀번호를 입력해주세요 ! ">
 		          </div>
 		        </div>
 		        <div class="ui fluid large teal submit button" id="btn_login">Login</div>
@@ -103,7 +116,7 @@
 		
 		      <div class="ui error message"></div>
 		
-		    </form>
+		    </div>
 		
 		    <div class="ui message">
 		     아직 회원이 아니신가요 ? &nbsp; <a href="/member/join">회원가입 </a>
