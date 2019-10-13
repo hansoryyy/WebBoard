@@ -1,7 +1,9 @@
 package github.hansoryyy.webboard.service;
 
+import java.io.IOException;
 import java.util.List;
 
+import github.hansoryyy.webboard.dto.BoardDTO;
 import github.hansoryyy.webboard.dto.PostDTO;
 /**
  * 
@@ -41,4 +43,10 @@ public interface IBoardService {
 	 * @param pnum
 	 */
 	void delete(Integer pnum);
+	
+	void insertBoard(BoardDTO dto)  throws IOException;
+
+	List<BoardDTO> selectBoardList();
+	
+	
 }

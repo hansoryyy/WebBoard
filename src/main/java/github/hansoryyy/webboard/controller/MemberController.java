@@ -19,6 +19,7 @@ import github.hansoryyy.webboard.service.IMemberService;
 @Controller
 public class MemberController {
 	
+	
 	@Autowired
 	private IMemberService memberService;
 	

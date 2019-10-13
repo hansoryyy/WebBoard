@@ -33,21 +33,6 @@ public class MemberServiceImpl implements IMemberService {
 		}
 	}
 
-	@Override
-	public MemberDTO loginAction(String loginId, String loginPasswd) {
-		MemberDTO dto = memberDAO.selectLoginInfo(loginId, loginPasswd);
-		return dto;
-		/*
-		if(dto!=null) {
-			
-			return true;
-		}else {
-			
-			return false;
-		}
-		*/
-		
-		
-	}
+
 
 }

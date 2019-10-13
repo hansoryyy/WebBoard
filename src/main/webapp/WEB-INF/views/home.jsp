@@ -12,6 +12,7 @@
 	<!--상단 고정된 헤더 -->
 	<%@include file="/WEB-INF/views/include/header.jspf" %>
 	
+	
 	<div>
 		<img src="/resources/img/home.jpg" style="width:100%; height:900px; ">
 	</div>

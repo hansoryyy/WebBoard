@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="BoardMapper">
+	
+	<!--
+		BoardDTO p = new BoardDTO();
+	 -->
+	<select id="selectBoardList" resultType="github.hansoryyy.webboard.dto.BoardDTO">
+		SELECT
+			board_no as boardNo,
+			title,
+			contents,
+			email
+		FROM board_info
+		
+	</select>
+	
+	<select id="postView" parameterType="int" resultType="github.hansoryyy.webboard.dto.BoardDTO">
+		SELECT
+			seq,
+			title,
+			writer,
+			content,
+			create_date as createDate
+		FROM post
+		WHERE
+			seq = #{id}
+	
+	</select>
+	
+	<insert id="insertBoard" parameterType="github.hansoryyy.webboard.dto.BoardDTO">
+		INSERT INTO BOARD_INFO 
+		(
+			title, 
+			contents, 
+			email, 
+			create_ip
+		) 
+		values
+			(#{title}, 
+			#{contents}, 
+			#{email}, 
+			#{createIp}
+		);
+	
+	</insert>
+
+
+
+</mapper>

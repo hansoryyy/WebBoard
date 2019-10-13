@@ -13,10 +13,9 @@ import github.hansoryyy.webboard.dto.MemberDTO;
 public class LoginChecker extends HandlerInterceptorAdapter{
 	
 	@Override
-	public boolean preHandle(HttpServletRequest req, HttpServletResponse res, Object handler)
-			throws Exception {
-		// TODO Auto-generated method stub
+	public boolean preHandle(HttpServletRequest req, HttpServletResponse res, Object handler)throws Exception {
 		System.out.println("[INTERCEPTOR] " + req.getRequestURI());
+		
 		String uri = strip(req); // /member/login
 		if("/member/login".equals(uri) && hasLogin(req)) {
 			res.sendRedirect("/");
@@ -26,8 +25,6 @@ public class LoginChecker extends HandlerInterceptorAdapter{
 			res.sendRedirect("/");
 			return false;
 		}
-		
-		
 		return true;
 		// return super.preHandle(req, res, handler);
 	}
@@ -35,14 +32,12 @@ public class LoginChecker extends HandlerInterceptorAdapter{
 	boolean hasLogin(HttpServletRequest req) {
 		HttpSession session = req.getSession();
 		MemberDTO dto = (MemberDTO) session.getAttribute("loginInfo");
-		
 		if(dto!=null) {
 			return true;
 		}
-
 		return false;
 	}
-
+	
 	String strip(HttpServletRequest req) {
 		String fullUri = req.getRequestURI();
 		String ctxpath = req.getContextPath();

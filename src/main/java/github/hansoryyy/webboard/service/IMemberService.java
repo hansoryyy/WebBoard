@@ -8,5 +8,4 @@ public interface IMemberService {
 
 	public int memberCheck(String prop, String value);
 	
-	public MemberDTO loginAction(String loginId, String loginPasswd);
 }

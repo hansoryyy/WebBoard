@@ -50,8 +50,6 @@ public class HomeController {
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String home(HttpServletRequest req) {
-		List<PostDTO> posts = boardService.selectPostList();
-		req.setAttribute("postings", posts);
 		return "home";
 	}
 	
@@ -59,25 +57,6 @@ public class HomeController {
 	// Integer.parseInt("haha");
 	// content/1228
 	// http://localhost/webboard/content
-	
-/*	@RequestMapping(value = "/content/{pnum}", method = RequestMethod.GET)
-	public String content(HttpServletRequest req, @PathVariable Integer pnum) {
-		PostDTO postView = boardService.postView(pnum);
-		req.setAttribute("postView", postView);
-		return "content";
-	}
-	
-	@RequestMapping(value = "/content", method = RequestMethod.GET)
-	public String invalidRequest(HttpServletRequest req) {
-		return "redirect:/list";
-	}
-	
-	@RequestMapping(value = "/delete", method = RequestMethod.POST)
-	public String delete(HttpServletRequest req,  @RequestParam Integer pnum) {
-		boardService.delete(pnum);
-		
-		return "redirect:/list";
-	}*/
 	
 	@RequestMapping(value = "/member/join", method = RequestMethod.GET)
 	public String join(HttpServletRequest req) {
@@ -91,31 +70,6 @@ public class HomeController {
 		return "member/login";
 	}
 	
-	@RequestMapping(value = "/member/loginAction", method = RequestMethod.POST)
-	@ResponseBody
-	public Object loginAction(HttpSession session, @RequestParam String loginId, @RequestParam String loginPasswd ){
-		System.out.println(loginId + ": " + loginPasswd);
-		MemberDTO dto = MemberService.loginAction(loginId, loginPasswd);
 
-		Map<String, Object> res = new HashMap<>();
-		if ( dto != null) {
-			session.setAttribute("loginInfo", dto);			
-			res.put("member", dto);
-		} else {
-			res.put("cause", "invalid");
-		}
-		
-		res.put("success", dto != null);
-		
-		return res; // ddd.jsp
-	}
-	
-	
-	
-	@RequestMapping(value = "/member/logout", method = RequestMethod.GET)
-	public String logout(HttpSession session){
-		session.invalidate();
-		return "redirect:/";
-	}
 	
 }

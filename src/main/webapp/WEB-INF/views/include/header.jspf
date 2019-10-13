@@ -14,7 +14,9 @@
       	<a href="/member/logout" class="item">로그아웃</a>
         <a href="/member/join" class="item">마이페이지</a>      
       </c:if>
-      <div class="ui simple dropdown item">
+      	<a href="/board/boardList" class="item">게시판</a>
+      	
+<!--  <div class="ui simple dropdown item">
         Dropdown <i class="dropdown icon"></i>
         <div class="menu">
           <a class="item" href="#">Link Item</a>
@@ -31,7 +33,8 @@
           </div>
           <a class="item" href="#">Link Item</a>
         </div>
-      </div>
+      </div> -->
+      
     </div>
   </div>
   <div style = "height:40px;">[[${loginInfo}]]</div>
