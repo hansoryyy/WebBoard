@@ -1,6 +1,7 @@
 package github.hansoryyy.webboard.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -25,12 +26,18 @@ public class BoardDAO {
 		return session.selectOne("BoardMapper.postView", pnum);
 	}
 
-	public void insertBoard(BoardDTO dto) {
+	public int insertBoard(BoardDTO dto) {
 		session.insert("BoardMapper.insertBoard", dto);
+		int boardNo = dto.getBoardNo();
+		return boardNo;
 	}
 	
 	public List<BoardDTO> selectBoardList() {
 		 return session.selectList("BoardMapper.selectBoardList");
+	}
+
+	public void insertUpFiles(Map map) {
+		session.insert("BoardMapper.insertUpFiles", map);
 	}
 		
 }

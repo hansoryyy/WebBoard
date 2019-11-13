@@ -1,25 +1,35 @@
 package github.hansoryyy.webboard.controller;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Iterator;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.servlet.ModelAndView;
 
-import github.hansoryyy.webboard.dao.BoardDAO;
 import github.hansoryyy.webboard.dto.BoardDTO;
 import github.hansoryyy.webboard.service.IBoardService;
 
@@ -27,8 +37,6 @@ import github.hansoryyy.webboard.service.IBoardService;
 public class BoardController {
 	
 	@Autowired IBoardService boardService;
-	
-	
 	
 	private static Logger log = LoggerFactory.getLogger(BoardController.class);
 	
@@ -47,64 +55,113 @@ public class BoardController {
 	
 	@RequestMapping(value="/board/boardWriteForm", method = RequestMethod.GET)
 	public String boardWriteForm() {
-		//TODO 로그인 기능 구현 다되면 로그인VO정보  writeFrom에 뿌려줘야함 ...		
+		//TODO 로그인 기능 구현 다되면 로그인VO정보  writeFrom에 뿌려줘야함 ...		`
 		return "/board/boardWriteForm";
 	}
 	
+	@ResponseBody
 	@RequestMapping(value="/board/doWrite", method = RequestMethod.POST)
-	public String boardWriteForm(MultipartHttpServletRequest req) throws IOException {
+	public String boardWriteForm(MultipartHttpServletRequest req, HttpSession session) throws IOException {
 		//TODO 로그인 기능 구현 다되면 로그인VO정보  writeFrom에 뿌려줘야함 ...	
 		String title = req.getParameter("title");
 		String content = req.getParameter("content");
 		String email = req.getParameter("email");
-		List<MultipartFile> files = req.getFiles("file");
+		// List<MultipartFile> files = req.getFiles("file");
 		String ip = req.getRemoteAddr();
-		
 		
 		BoardDTO dto = new BoardDTO();
 		dto.setTitle(title);
 		dto.setContents(content);
 		dto.setEmail(email);
-		dto.setFiles(files);
+		// dto.setFiles(files);
 		dto.setCreateIp(ip);
 		
-		System.out.println(title);
-		System.out.println(content);
+		List<String[]> imgFiles = null;
+		if(session.getAttribute("aFiles")!= null) {
+			imgFiles = (List<String[]>) session.getAttribute("aFiles");
+			dto.setFiles(imgFiles);
+		}
+		// dto.setImageFiles(imgFiles);
 		
 		boardService.insertBoard(dto);
 		
-		
-		/* 이런거 필요없음
-		Iterator<String> nameItr = req.getFileNames();
-		Map<String, Object> params = req.getParameterMap();
-		while (nameItr.hasNext()) {
-			// req.getParameter("title");
-			String nameAttr = nameItr.next(); //
-			MultipartFile file = req.getFile(nameAttr);
-			if (file.isEmpty() == false) {
-                log.info("---------- file start ----------");
-                log.info("name : " + file.getName());
-                log.info("filename : " + file.getOriginalFilename());
-                log.info("size : " + file.getSize());
-                log.info("---------- file end ----------\n");
-            }
-		}
-		*/
-		
-		return "redirect:/boardWriteForm";
+		session.removeAttribute("aFiles");
+		return "success";
 	}
+	
+	@ResponseBody
+	@RequestMapping(value="/board/summernoteImageUpload", method = RequestMethod.POST)
+	public Object summernoteImageUpload(MultipartHttpServletRequest req, HttpSession session) throws IOException {
+		MultipartFile file = req.getFile("file");
+		Map res = new HashMap();
+		// TODO 서비스 클래스로 빼냄 FileStorageService
+		// 
+		if(! file.isEmpty() ){
+			
+			SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss_SSS");
+			Date time = new Date();
+			
+			String originName = file.getOriginalFilename();
+			String ext = originName.substring(originName.lastIndexOf('.'));
+			String currentTime = format.format(time);
+			String genFileName = "boardNo_tmp+"+currentTime + (int)(1000000*Math.random()) + ext;
+		
+			
+			String rootPath = "C:\\Users\\kizuna\\Documents\\uproot";
+			File destFile = new File(rootPath, genFileName);
+			FileOutputStream fos = new FileOutputStream(destFile);
+			IOUtils.copy(file.getInputStream(), fos);
+			
+			 
+			List<String[]> files = (List) session.getAttribute("aFiles");
+			if(files == null) {
+				files = new ArrayList<>();
+				session.setAttribute("aFiles", files);
+			}
+			files.add(new String[] {genFileName, originName});
+			res.put("success", true);
+			
+			String imgUrl = req.getContextPath() + "/board/upimg/" + genFileName;
+			res.put("img_url", imgUrl);
+		} else {
+			res.put("success", false);
+			res.put("cause", "EMPTY_IMG");
+			
+		}
+		return res;
+	}
+	
+	@RequestMapping(value="/board/upimg/{imgpath:.+}", method = RequestMethod.GET)
+	public void boardWriteForm(@PathVariable String imgpath, HttpServletResponse response) throws IOException {
+		OutputStream out = response.getOutputStream();				// 브라우저에 보낼 출력 스트림
+		
+		String rootPath = "C:\\Users\\kizuna\\Documents\\uproot";
+		File filepath = new File(rootPath, imgpath);
+		if (filepath.exists()) {
+			// 1. content-type
+			int fsize = (int)filepath.length(); // 23,749
+			response.setContentLength(fsize);
+			String ext = imgpath.substring(imgpath.lastIndexOf('.')+1); // abc.jpg
+			// 2. content type
+			String type = "image/" + ext;
+			response.setContentType(type);
+			
+			// 3. sending image data ....
+			FileInputStream fin = new FileInputStream(filepath);	//서버디스크에 있는 파일으 읽어드림
+			IOUtils.copy(fin, out);
+
+		} else {
+			response.sendError(404);
+		}
+	}
+	
+	
 	
 	@RequestMapping(value="/board/doWrite2", method = RequestMethod.POST)
 	public String boardWriteForm(
 			@RequestParam String title, 
 			@RequestParam String content, 
 			@RequestParam MultipartFile file) {
-		//TODO 로그인 기능 구현 다되면 로그인VO정보  writeFrom에 뿌려줘야함 ...	
-		System.out.println(title);
-		System.out.println(content);
-		System.out.println(file.getName());
-		System.out.println(file.getOriginalFilename());
-		System.out.println(file.getSize());
 		
 		return "redirect:/board/boardWriteForm";
 	}

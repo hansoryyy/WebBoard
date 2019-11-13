@@ -30,7 +30,7 @@ public class BoardDTO {
 	private String updateDt;
 	private String rowState;
 	
-	private List<MultipartFile> files;
+	private List<String[]> files;
 	
 	public int getBoardNo() {
 		return boardNo;
@@ -164,10 +164,10 @@ public class BoardDTO {
 	public void setRowState(String rowState) {
 		this.rowState = rowState;
 	}
-	public List<MultipartFile> getFiles() {
+	public List<String[]> getFiles() {
 		return files;
 	}
-	public void setFiles(List<MultipartFile> files) {
+	public void setFiles(List<String[]> files) {
 		this.files = files;
 	}
 	

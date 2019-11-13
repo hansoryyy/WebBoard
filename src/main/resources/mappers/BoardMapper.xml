@@ -28,7 +28,7 @@
 	
 	</select>
 	
-	<insert id="insertBoard" parameterType="github.hansoryyy.webboard.dto.BoardDTO">
+	<insert id="insertBoard" parameterType="github.hansoryyy.webboard.dto.BoardDTO" keyProperty="boardNo" keyColumn="boardNo" useGeneratedKeys="true">
 		INSERT INTO BOARD_INFO 
 		(
 			title, 
@@ -37,12 +37,29 @@
 			create_ip
 		) 
 		values
-			(#{title}, 
+		(
+			#{title}, 
 			#{contents}, 
 			#{email}, 
 			#{createIp}
 		);
+	</insert>
 	
+	<insert id="insertUpFiles" parameterType="map">
+		INSERT INTO upfiles
+		(
+			origin_filename, 
+			gen_filename, 
+			board_no, 
+			create_ip
+		) 
+		values
+		(
+			#{originFilename}, 
+			#{genFilename}, 
+			#{boardNo}, 
+			#{createIp}
+		)
 	</insert>
 
 

@@ -1,12 +1,14 @@
 package github.hansoryyy.webboard.service;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +20,7 @@ import github.hansoryyy.webboard.dto.PostDTO;
 @Service
 public class BoardServiceImpl implements IBoardService {
 
-	@Autowired BoardDAO boardDao;
+	@Autowired BoardDAO boardDAO;
 	
 	String rootPath = "C:\\Users\\kizuna\\Documents\\uproot";
 	
@@ -26,13 +28,13 @@ public class BoardServiceImpl implements IBoardService {
 	
 	@Override
 	public List<PostDTO> selectPostList() {
-		return boardDao.selectPostList();
+		return boardDAO.selectPostList();
 	}
 
 	@Override
 	public PostDTO postView(Integer pnum) {
 		
-		return boardDao.postView(pnum);
+		return boardDAO.postView(pnum);
 	}
 
 	@Override
@@ -41,34 +43,40 @@ public class BoardServiceImpl implements IBoardService {
 		
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public void insertBoard(BoardDTO dto) throws IOException {
-		// 1. 디비에 글 내용을 기록함
-		boardDao.insertBoard(dto);
-		int boardNo = dto.getBoardNo();
+		// 1. 디비에 글 내용을 기록함 (
+		int boardNo = boardDAO.insertBoard(dto);	//insert된 board_info pk값을 return
+
+		List<String[]> files = dto.getFiles();
 		
-		// 2. 파일을 저장함 - 로컬디렉토리 or 외부 storage 업체 api 이용
-		
-		// 2.1. upfiles 테이블에 업로드 파일 정보를 저장함
-		
-		// 2.2. 실제 디스크레 저장함
-		
-		// 2.2.1. 새로운 파일 이름을 생성해야 합니다(이름 충돌 방지)
-		List<MultipartFile> files = dto.getFiles();
 		for(int i=0; i<files.size(); i++) {
-			MultipartFile file = files.get(i);
-			if(! file.isEmpty() ){
-				File destFile = new File(rootPath, file.getOriginalFilename());
-				FileOutputStream fos = new FileOutputStream(destFile);
-				IOUtils.copy(file.getInputStream(), fos);				
-			}
+			String[] file = files.get(i);
+
+				
+				// 2.1. upfiles 테이블에 업로드 파일 정보를 저장함
+				SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss_SSS");
+				Date time = new Date();
+				String currentTime = format.format(time);
+				Map tmpMap = new HashMap();
+				tmpMap.put("genFilename", file[0]);
+				tmpMap.put("originFilename", file[1]);
+				tmpMap.put("boardNo", boardNo);
+				tmpMap.put("createIp", dto.getCreateIp());
+				boardDAO.insertUpFiles(tmpMap);
+				
+//				File destFile = new File(rootPath, (String)tmpMap.get("genFilename"));
+//				FileOutputStream fos = new FileOutputStream(destFile);
+//				IOUtils.copy(file.getInputStream(), fos);
+
 		}
 		// FileUtils.copyFile(srcFile, destFile);
 	}
 	
 	@Override
 	public List<BoardDTO> selectBoardList() {
-		return boardDao.selectBoardList();
+		return boardDAO.selectBoardList();
 	}
 	
 
