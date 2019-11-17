@@ -90,8 +90,8 @@ public class BoardController {
 	}
 	
 	@ResponseBody
-	@RequestMapping(value="/board/summernoteImageUpload", method = RequestMethod.POST)
-	public Object summernoteImageUpload(MultipartHttpServletRequest req, HttpSession session) throws IOException {
+	@RequestMapping(value="/board/tempFileUpload", method = RequestMethod.POST)
+	public Object tempFileUpload(MultipartHttpServletRequest req, HttpSession session) throws IOException {
 		MultipartFile file = req.getFile("file");
 		Map res = new HashMap();
 		// TODO 서비스 클래스로 빼냄 FileStorageService
@@ -104,7 +104,7 @@ public class BoardController {
 			String originName = file.getOriginalFilename();
 			String ext = originName.substring(originName.lastIndexOf('.'));
 			String currentTime = format.format(time);
-			String genFileName = "boardNo_tmp+"+currentTime + (int)(1000000*Math.random()) + ext;
+			String genFileName = currentTime + (int)(1000000*Math.random()) + ext;
 		
 			
 			String rootPath = "C:\\Users\\kizuna\\Documents\\uproot";
@@ -112,17 +112,19 @@ public class BoardController {
 			FileOutputStream fos = new FileOutputStream(destFile);
 			IOUtils.copy(file.getInputStream(), fos);
 			
-			 
 			List<String[]> files = (List) session.getAttribute("aFiles");
 			if(files == null) {
 				files = new ArrayList<>();
 				session.setAttribute("aFiles", files);
 			}
+			
 			files.add(new String[] {genFileName, originName});
 			res.put("success", true);
 			
 			String imgUrl = req.getContextPath() + "/board/upimg/" + genFileName;
 			res.put("img_url", imgUrl);
+			res.put("length", destFile.length());
+			res.put("fileId", genFileName);
 		} else {
 			res.put("success", false);
 			res.put("cause", "EMPTY_IMG");
@@ -130,6 +132,39 @@ public class BoardController {
 		}
 		return res;
 	}
+	
+	@ResponseBody
+	@RequestMapping(value="/board/tempFileDelete", method = RequestMethod.POST)
+	public Object tempFileDelete(HttpServletRequest req, HttpSession session) throws IOException {
+		Map res = new HashMap();
+		String fileId = req.getParameter("fileId");
+		
+		List<String[]> files = (List) session.getAttribute("aFiles");
+		if(files != null) {
+			for(int i=0; i< files.size(); i++) {
+				String[] elem = files.get(i);
+				if(elem[i].equals(fileId)) {
+					files.remove(i);
+				}
+			}			
+			res.put("success", true);
+		}else {
+			res.put("success", false);
+		}
+		
+		
+		return res;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	@RequestMapping(value="/board/upimg/{imgpath:.+}", method = RequestMethod.GET)
 	public void boardWriteForm(@PathVariable String imgpath, HttpServletResponse response) throws IOException {

@@ -13,30 +13,27 @@
 	<!-- summernote js, css -->
 
 	<script type="text/javascript">
-	
-	function insertImgTag(imgUrl) {
-		$('#summernote').summernote('insertImage', imgUrl);
-	}
-	
+		
+		
 		$(document).ready(function(){
-			
 			
 			$('#summernote').summernote({
 				height:300,
 				focus:true,
 				callbacks:{
 					onImageUpload : function (files){	//이미지 업로드시 DB에 저장하고 content 영역에 뿌려줌.
-						summernoteImageUpload(files[0], insertImgTag);
+						tempFileUpload(files[0], insertImgTag);
 					}
 				} 
 			});
+			
 			
 			$(".action input:text, .action .attachBtn").click(function() {
 				 $(this).parent().find("input:file").click();
 			});
 			
 			//첨부파일 삭제시
-			$(".action .detachBtn").click(function(){
+			$(" .detachBtn").click(function(){
 				var idx = $(this).index(".detachBtn");
 				$(".file").eq(idx).val("");
 				$(".fileName").eq(idx).val("");
@@ -44,33 +41,16 @@
 			});
 			
 			//첨부파일 업로드시
-			$(".file").on("change", function () {
-				var file = this.files[0],
-				 	fileName = file.name,
+			$(".file").on("change", function () {	
+				var file = this.files[0]				
+				var fileName = file.name,
 				 	fileSize = file.size,
 				 	idx = $(".file").index(this);
 				
-		/* 		var fileValue = $(file).val().split("\\");
-				var fileName = fileValue[fileValue.length-1]; // 파일명 */
-
-			
-				idx = $(this).data('idx');
+				console.log('object File : ' + file );
 				
-					var fileObj = $('.file'); // [file, file, file]
-				if(fileSize>3072){
-					alert("3MB 이하의 파일만 업로드해주세요.");
-					$(this).val("");
-					return;
-				}
-				
-				
-				summernoteImageUpload(file, function (dddddd) {
-					$('#file-list').append('<span>'+fileName+'</span>');
-				});
-				
-
-				//alert("idx: " + fileName + " @ " + fileSize + "bytes");
-				//CustomFileHandlingFunction(file);
+				// tempFileUpload(file, putAttachFile(fileName, fileSize));
+				tempFileUpload(file, putAttachFile);
 	        });
 			
 			
@@ -85,12 +65,7 @@
 			 /* formData.append("file",$("input[name=file]")[0].files[0]);
 				formData.append("file",$("input[name=file]")[1].files[0]);
 				formData.append("file",$("input[name=file]")[2].files[0]); */
-				
-				
-				
-				
-				
-				
+	
 				$.ajax({
 					method:"POST",
 					url:"/board/doWrite",
@@ -108,17 +83,44 @@
 				})
 			});
 			
+			$('#file-list').click(function(e){
+				console.log(e.target);
+				if ($(e.target).hasClass('detachBtn')) {
+					deleteUpfile($(e.target).parent());
+				}
+			});
+			
 		}); //$(document).ready
-
 		
-		function summernoteImageUpload(file, successCallback){
-			var formData = new FormData();
-			formData.append('file', file);
+		function insertImgTag(imgUrl) {
+			$('#summernote').summernote('insertImage', imgUrl);
+		}
+		function deleteUpfile(fileElem) {
+			var fileId = $(fileElem).attr("id");
+			console.log(fileId)
+			$.ajax({
+				data : {fileId : fileId},
+				type : "POST",
+				url : "/board/tempFileDelete",
+				success : function (data){
+					if (data.success) {
+						$(fileElem).remove();
+					}
+				}
+			})
+		}
+		function putAttachFile(fileName, fileSize, fileId){
+			$('#file-list').append('<div id="' + fileId + '"><span>'+fileName+' ( ' + parseInt(fileSize/1024) +' KB )</span><a class= "detachBtn" style="cursor:pointer">[삭제]</a></div>');
+		}
+		
+		function tempFileUpload(file, successCallback){
+			var fileFormData = new FormData();
+			fileFormData.append('file', file); // [ img, pdf]
 			
 			$.ajax({
-				data : formData,
+				data : fileFormData,
 				type : "POST",
-				url : "/board/summernoteImageUpload",
+				url : "/board/tempFileUpload",
 				enctype:"multipart/form-data",
 				cache : false,
 				contentType : false,
@@ -127,17 +129,15 @@
 					
 					if (data.success && successCallback) {
 						var url = data.img_url;
-						successCallback(url);
+						var fileId = data.fileId;
+						var fileSize = data.length;
+						
+						
+						successCallback(url, fileSize, fileId);
 					}
 				}
-				
-				
 			})
-			
 		}
-		
-
-		
 	
 	</script>
 	
@@ -168,20 +168,19 @@
 		  		</div>
 		  		<!-- 첨푸파일 -->
 		  		<div class="field">
-		  			<label>첨부파일&nbsp;&nbsp;&nbsp;*최대3개의 파일 업로 가능하며 각파일의 용량은 3MB이하 파일을 업로드 해주세요.</label>
-		  			<div class="ui action input" id="file-list">
-		  				
-		  			</div>
-			  		<div class="ui action input">
-		  				<input type="text" placeholder="첨부파일 1" class="fileName" readonly>
+					<div class="ui action input">
+		  				<input type="text" placeholder="파일첨부" class="fileName" readonly>
 		  				<input type="file" name="file" class="file" value="" data-idx="0">
 		  			  <div class="ui icon button attachBtn">
 		   			 	<i class="attach icon"></i>
 		  			  </div>
-		  			  <div class="ui icon button detachBtn">
+<!-- 		  		<div class="ui icon button detachBtn">
 		   			 	<i class="x icon"></i>
-		  			  </div>
-					</div><br/><br/>
+		  			  </div> -->
+					</div><br/>
+					<div class="ui positive message" id="file-list" >
+  						 <h4>*첨부된 파일 목록</h4>
+					</div>
 					<!-- 
 					<div class="ui action input">
 		  				<input type="text" placeholder="첨부파일 2" class="fileName" readonly>
