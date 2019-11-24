@@ -1,6 +1,7 @@
 package github.hansoryyy.webboard.controller;
 
 import java.text.DateFormat;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -27,7 +28,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import github.hansoryyy.webboard.dto.MemberDTO;
-import github.hansoryyy.webboard.dto.PostDTO;
 import github.hansoryyy.webboard.service.IBoardService;
 import github.hansoryyy.webboard.service.IMemberService;
 import github.hansoryyy.webboard.service.MemberServiceImpl;

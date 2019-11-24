@@ -11,8 +11,8 @@
         <a href="/member/join" class="item">회원가입</a>      
       </c:if>
       <c:if test="${not empty loginInfo}">
-      	<a href="/member/logout" class="item">로그아웃</a>
-        <a href="/member/join" class="item">마이페이지</a>      
+      	<a href="/login/logout" class="item">로그아웃</a>
+        <a href="javascript:alert('준비중입니다');" class="item">마이페이지</a>      
       </c:if>
       	<a href="/board/boardList" class="item">게시판</a>
       	

@@ -15,21 +15,20 @@ public class BoardDTO {
 	private String title;
 	private String contents;
 	private int hits;
-	private int like;
-	private int hate;
+	private int likes;
+	private int hates;
 	private String fixedYn;
 	private String secertYn;
 	private String email;
 	private int replySeq;
 	private int replyLev;
-	private Date writeDt;	//JAVA.UTIL.DATE
+	private String writeDt;	//JAVA.UTIL.DATE
 	private String writeTm;
 	private String createIp;
 	private String createDt;
 	private String updateIp;
 	private String updateDt;
 	private String rowState;
-	
 	private List<String[]> files;
 	
 	public int getBoardNo() {
@@ -80,17 +79,17 @@ public class BoardDTO {
 	public void setHits(int hits) {
 		this.hits = hits;
 	}
-	public int getLike() {
-		return like;
+	public int getlikes() {
+		return likes;
 	}
-	public void setLike(int like) {
-		this.like = like;
+	public void setlikes(int likes) {
+		this.likes = likes;
 	}
-	public int getHate() {
-		return hate;
+	public int gethates() {
+		return hates;
 	}
-	public void setHate(int hate) {
-		this.hate = hate;
+	public void sethates(int hates) {
+		this.hates = hates;
 	}
 	public String getFixedYn() {
 		return fixedYn;
@@ -122,10 +121,10 @@ public class BoardDTO {
 	public void setReplyLev(int replyLev) {
 		this.replyLev = replyLev;
 	}
-	public Date getWriteDt() {
+	public String getWriteDt() {
 		return writeDt;
 	}
-	public void setWriteDt(Date writeDt) {
+	public void setWriteDt(String writeDt) {
 		this.writeDt = writeDt;
 	}
 	public String getWriteTm() {

@@ -1,6 +1,8 @@
 package github.hansoryyy.webboard.controller.interceptor;
 
 import java.lang.reflect.Member;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,17 +16,24 @@ public class LoginChecker extends HandlerInterceptorAdapter{
 	
 	@Override
 	public boolean preHandle(HttpServletRequest req, HttpServletResponse res, Object handler)throws Exception {
-		System.out.println("[INTERCEPTOR] " + req.getRequestURI());
-		
 		String uri = strip(req); // /member/login
-		if("/member/login".equals(uri) && hasLogin(req)) {
+		
+		//비로그인 상테에서만 접근 가능한 uri
+		List<String> gusestAccessUriList = Arrays.asList(
+				"/member/join",
+				"/member/memberCheck"
+		);
+		
+		//로그인 상태에서만 접근 가능한 uri
+		List<String> memberAccessUriList = Arrays.asList(
+				
+		);
+		
+		if(gusestAccessUriList.contains(uri) && hasLogin(req)) {
 			res.sendRedirect("/");
 			return false;
 		}
-		if ( "/member/join".equals(uri) && hasLogin(req) ) {
-			res.sendRedirect("/");
-			return false;
-		}
+		
 		return true;
 		// return super.preHandle(req, res, handler);
 	}

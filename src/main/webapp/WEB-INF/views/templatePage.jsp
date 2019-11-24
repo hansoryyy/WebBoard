@@ -10,8 +10,10 @@
 	<%@include file="/WEB-INF/views/include/header.jspf" %>
 	
 	<!--중앙 몸통 시작 -->
+	<div style="padding: 50px; min-height: 863px;">
 	
-
+	
+	</div>
 	<!--하단고정된 푸터 -->
 	<%@include file="/WEB-INF/views/include/footer.jspf" %>
 </body>

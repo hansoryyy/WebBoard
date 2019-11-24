@@ -3,7 +3,6 @@
 <html>
 <head>
 	<%@include file="/WEB-INF/views/include/incResource.jspf" %>
-	
 	<title>로그인</title>
   <style type="text/css">
     body {background-color: #DADADA;}
@@ -19,7 +18,7 @@
 	  // loginId=12222&loginPw=3333
 	$.ajax({
 		type : "post",
-		url : "/member/loginAction",
+		url : "/login/loginAction",
 		data : {
 			loginId : $('#loginId').val(),
 			loginPasswd : $('#loginPasswd').val()

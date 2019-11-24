@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,6 +21,7 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,8 +33,18 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import github.hansoryyy.webboard.dto.BoardDTO;
+import github.hansoryyy.webboard.dto.UpfilesDTO;
 import github.hansoryyy.webboard.service.IBoardService;
-
+import github.hansoryyy.webboard.util.PageInfo;
+/**
+ * 게시판 요청을 담당하는 컨트롤로
+ * - 조회
+ * - 글쓰기
+ * - 삭제
+ * 
+ * @author kizuna
+ *
+ */
 @Controller 
 public class BoardController {
 	
@@ -40,18 +52,88 @@ public class BoardController {
 	
 	private static Logger log = LoggerFactory.getLogger(BoardController.class);
 	
+	@Value("${img.root}")
+	private String rootPath;
+	
 	
 	@RequestMapping(value = "/board/boardList", method = RequestMethod.GET)
-	public String boardList(HttpServletRequest req, Model model) {
+	public String boardList(Model model, @RequestParam Map param, PageInfo pageInfo) {
+		pageInfo.setRecordCountPerPage(15);			//페이지당 row 갯수
+		pageInfo.setCurrentPageNo(1);				//현재 페이지 번호
+		pageInfo.setPageSize(5);					//하단 페이지 리스트에 표현되는 페이지 갯수
+		pageInfo.init(param);
 		
-		List<BoardDTO> list = boardService.selectBoardList();
-		// model.addObject(attributeValue)
-		model.addAttribute("boardList", list);
+		//검색단어가 있을떄 
+		String kw = (String)param.get("searchKw");
+		if(kw != null && !kw.equals("")) {
+			String[] searchKw = kw.split("\\s+");
+			param.put("searchKw", searchKw);
+		}
+		
+		long boardListCount = boardService.selectBoardListCount(param);
+		pageInfo.setTotalRecordCount(boardListCount);
+		
+		List<BoardDTO> boardList = boardService.selectBoardList(param);
+		model.addAttribute("boardList", boardList);
+		model.addAttribute("pageInfo", pageInfo);
+		
+		System.out.println("img root: " + rootPath);
+		
 		return "board/boardList";
 	}
-	
-	
-	
+	/**
+	 * 
+	 * @param param
+	 * @param pageInfo
+	 * @param currentPageNo
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/board/boardAjaxList", method = RequestMethod.GET)
+	public Map boardAjaxList(@RequestParam Map param, PageInfo pageInfo, @RequestParam long currentPageNo) {
+		
+		//Map param = new HashMap();
+		pageInfo.setRecordCountPerPage(15);			//페이지당 row 갯수
+		pageInfo.setCurrentPageNo(currentPageNo);	//현재 페이지 번호
+		pageInfo.setPageSize(5);					//하단 페이지 리스트에 표현되는 페이지 갯수
+		pageInfo.init(param);
+		
+		//검색단어가 있을떄 
+		String kw = (String)param.get("searchKw");
+		if(kw != null && !kw.equals("")) {
+			String[] searchKw = kw.split("\\s+");
+			param.put("searchKw", searchKw);
+		}
+		
+		long boardAjaxListCount = boardService.selectBoardListCount(param);
+		pageInfo.setTotalRecordCount(boardAjaxListCount);
+		
+		List<BoardDTO> boardAjaxList = boardService.selectBoardList(param);
+		Map res = new HashMap();
+		res.put("success",true);
+		res.put("boardAjaxListCount",boardAjaxListCount);
+		res.put("boardAjaxList", boardAjaxList);
+		res.put("pageInfo", pageInfo);
+		
+		return res;
+	}
+	/**
+	 * 
+	 * @param model
+	 * @param param
+	 * @return
+	 */
+	@RequestMapping(value="/board/boardView", method = RequestMethod.GET)
+	public String boardView(Model model, @RequestParam Map param) {
+		BoardDTO boardInfo = boardService.selectBoardView(param);
+		model.addAttribute("boardInfo", boardInfo);
+		List<UpfilesDTO> upfilesList = boardService.selectUpfilesList(param);
+		if(upfilesList!=null && upfilesList.size()>0) {
+			model.addAttribute("upfilesList", upfilesList);
+		}
+		return "/board/boardView";
+	}
+
 	
 	@RequestMapping(value="/board/boardWriteForm", method = RequestMethod.GET)
 	public String boardWriteForm() {
@@ -63,6 +145,9 @@ public class BoardController {
 	@RequestMapping(value="/board/doWrite", method = RequestMethod.POST)
 	public String boardWriteForm(MultipartHttpServletRequest req, HttpSession session) throws IOException {
 		//TODO 로그인 기능 구현 다되면 로그인VO정보  writeFrom에 뿌려줘야함 ...	
+		/*
+		 * 
+		 */
 		String title = req.getParameter("title");
 		String content = req.getParameter("content");
 		String email = req.getParameter("email");
@@ -107,7 +192,7 @@ public class BoardController {
 			String genFileName = currentTime + (int)(1000000*Math.random()) + ext;
 		
 			
-			String rootPath = "C:\\Users\\kizuna\\Documents\\uproot";
+			// String rootPath = "C:\\Users\\kizuna\\Documents\\uproot";
 			File destFile = new File(rootPath, genFileName);
 			FileOutputStream fos = new FileOutputStream(destFile);
 			IOUtils.copy(file.getInputStream(), fos);
@@ -151,26 +236,13 @@ public class BoardController {
 		}else {
 			res.put("success", false);
 		}
-		
-		
 		return res;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	@RequestMapping(value="/board/upimg/{imgpath:.+}", method = RequestMethod.GET)
 	public void boardWriteForm(@PathVariable String imgpath, HttpServletResponse response) throws IOException {
 		OutputStream out = response.getOutputStream();				// 브라우저에 보낼 출력 스트림
 		
-		String rootPath = "C:\\Users\\kizuna\\Documents\\uproot";
 		File filepath = new File(rootPath, imgpath);
 		if (filepath.exists()) {
 			// 1. content-type
@@ -189,18 +261,5 @@ public class BoardController {
 			response.sendError(404);
 		}
 	}
-	
-	
-	
-	@RequestMapping(value="/board/doWrite2", method = RequestMethod.POST)
-	public String boardWriteForm(
-			@RequestParam String title, 
-			@RequestParam String content, 
-			@RequestParam MultipartFile file) {
 		
-		return "redirect:/board/boardWriteForm";
-	}
-	
-	
-	
 }

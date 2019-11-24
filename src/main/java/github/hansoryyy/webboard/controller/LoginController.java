@@ -21,28 +21,26 @@ public class LoginController {
 	private ILoginService LoginService;
 	
 	
-	@RequestMapping(value = "/member/loginAction", method = RequestMethod.POST)
+	@RequestMapping(value="/login/loginAction", method = RequestMethod.POST)
 	@ResponseBody
-	public Object loginAction(HttpSession session, @RequestParam String loginId, @RequestParam String loginPasswd ){
-		System.out.println(loginId + ": " + loginPasswd);
+	public Object loginAction(HttpSession session, @RequestParam String loginId, @RequestParam String loginPasswd){
 		MemberDTO dto = LoginService.loginAction(loginId, loginPasswd);
 		Map<String, Object> res = new HashMap<>();
-		
 		if ( dto != null) {
 			session.setAttribute("loginInfo", dto);			
 			res.put("member", dto);
 		} else {
 			res.put("cause", "invalid");
 		}
-		
 		res.put("success", dto != null);
-		
 		return res;
 	}
 	
-	@RequestMapping(value = "/member/logout", method = RequestMethod.GET)
+	@RequestMapping(value = "/login/logout", method = RequestMethod.GET)
 	public String logout(HttpSession session){
-		session.invalidate();
+		if(session.getAttribute("loginInfo")!=null) {
+			session.removeAttribute("loginInfo");
+		}
 		return "redirect:/";
 	}
 

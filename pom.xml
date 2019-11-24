@@ -13,6 +13,7 @@
 		<org.aspectj-version>1.6.10</org.aspectj-version>
 		<org.slf4j-version>1.6.6</org.slf4j-version>
 		<jackson.version>2.9.2</jackson.version>
+		<project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
 	</properties>
 	<dependencies>
 		<!-- Spring -->
@@ -33,7 +34,14 @@
 			<artifactId>spring-webmvc</artifactId>
 			<version>${org.springframework-version}</version>
 		</dependency>
-				
+		
+		<!-- log4jdbc -->
+		<dependency>
+		    <groupId>org.bgee.log4jdbc-log4j2</groupId>
+		    <artifactId>log4jdbc-log4j2-jdbc4.1</artifactId>
+		    <version>1.16</version>
+		</dependency>
+		
 		<!-- AspectJ -->
 		<dependency>
 			<groupId>org.aspectj</groupId>
@@ -161,8 +169,41 @@
 		</dependency>
 		        
 	</dependencies>
+	
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<properties>
+				<target.dir>dev</target.dir>
+			</properties>
+		</profile>
+		<profile>
+			<id>prod</id>
+			<properties>
+				<target.dir>prod</target.dir>
+			</properties>
+		</profile>
+	</profiles>
+	
     <build>
+    
     	<finalName>ROOT</finalName>
+    	<resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <excludes>
+                    <exclude>profiles/**</exclude>
+                </excludes>
+            </resource>
+            <resource>
+                <directory>src/main/resources/profiles/${target.dir}</directory>
+            </resource>
+            <resource>
+                <directory>src/test/resources/profiles/${target.dir}</directory>         
+            </resource>
+        </resources>
+    	
         <plugins>
             <plugin>
                 <artifactId>maven-eclipse-plugin</artifactId>

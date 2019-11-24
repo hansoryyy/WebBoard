@@ -1,6 +1,7 @@
 package github.hansoryyy.webboard.service;
 
 import java.io.File;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -16,32 +17,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import github.hansoryyy.webboard.dao.BoardDAO;
 import github.hansoryyy.webboard.dto.BoardDTO;
-import github.hansoryyy.webboard.dto.PostDTO;
+import github.hansoryyy.webboard.dto.UpfilesDTO;
 @Service
 public class BoardServiceImpl implements IBoardService {
 
 	@Autowired BoardDAO boardDAO;
 	
-	String rootPath = "C:\\Users\\kizuna\\Documents\\uproot";
-	
-	
-	
-	@Override
-	public List<PostDTO> selectPostList() {
-		return boardDAO.selectPostList();
-	}
-
-	@Override
-	public PostDTO postView(Integer pnum) {
-		
-		return boardDAO.postView(pnum);
-	}
-
-	@Override
-	public void delete(Integer pnum) {
-		// TODO Auto-generated method stub
-		
-	}
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -75,8 +56,24 @@ public class BoardServiceImpl implements IBoardService {
 	}
 	
 	@Override
-	public List<BoardDTO> selectBoardList() {
-		return boardDAO.selectBoardList();
+	public List<BoardDTO> selectBoardList(Map param) {
+		return boardDAO.selectBoardList(param);
+	}
+	
+	@Override
+	public long selectBoardListCount(Map param) {
+		return boardDAO.selectBoardListCount(param);
+	}
+	
+	@Override
+	public BoardDTO selectBoardView(Map param) {
+		int res = boardDAO.updateBoardHits(param);
+		return boardDAO.selectBoardView(param);
+	}
+	
+	@Override
+	public List<UpfilesDTO> selectUpfilesList(Map param) {
+		return boardDAO.selectUpfilesList(param);
 	}
 	
 

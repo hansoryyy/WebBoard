@@ -19,3 +19,7 @@
     <link rel="stylesheet" type="text/css" href="/resources/semantic/components/segment.css">
     <link rel="stylesheet" type="text/css" href="/resources/semantic/components/dropdown.css">
     <link rel="stylesheet" type="text/css" href="/resources/semantic/components/icon.css">
+    
+    <script type="text/javascript">
+    	var reqUrl = '${requestScope['javax.servlet.forward.request_uri']}';
+    </script>

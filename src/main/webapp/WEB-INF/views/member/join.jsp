@@ -193,7 +193,8 @@
 	<!--상단 고정된 헤더 -->
 	<%@include file="/WEB-INF/views/include/header.jspf" %>
 	<!--중앙 몸통 시작 -->
-		<div class="ui main text container" style="padding : 10px 0 0 0 ">
+	 <div style="padding: 50px; min-height: 737px;">
+		<div class="ui main text container">
 			<form class="ui form" id="joinForm">
 				  <h4 class="ui dividing header">회원가입</h4>
 			      <div class="field">
@@ -230,6 +231,7 @@
 				  
 				  <div class="ui button" id="btn_join" tabindex="0">가입하기</div>
 			</form>
+		</div>
 		</div>
 	<!--하단고정된 푸터 -->
 	<%@include file="/WEB-INF/views/include/footer.jspf" %>

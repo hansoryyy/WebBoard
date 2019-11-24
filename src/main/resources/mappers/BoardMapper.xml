@@ -5,31 +5,89 @@
 	<!--
 		BoardDTO p = new BoardDTO();
 	 -->
-	<select id="selectBoardList" resultType="github.hansoryyy.webboard.dto.BoardDTO">
+	 <select id="selectBoardListCount" parameterType="map" resultType="long">
 		SELECT
-			board_no as boardNo,
-			title,
-			contents,
-			email
-		FROM board_info
+			COUNT(*)
+		FROM
+			board_info X
+		WHERE 1=1
+			<if test='searchType != null and searchType != "" and searchKw != null and searchKw != ""'>
+			AND
+			<choose>
+				<when test="searchType == 'all'">
+					<foreach item="searchKw" index="index" collection="searchKw" open="(" separator="AND"  close=")">
+						  X.title LIKE CONCAT('%', #{searchKw}, '%')OR
+						  X.writer LIKE CONCAT('%', #{searchKw}, '%')OR
+						  X.contents LIKE CONCAT('%', #{searchKw}, '%') 
+					</foreach>
+				</when>
+				<otherwise>
+					<foreach item="searchKw" index="index" collection="searchKw" open="(" separator="AND"  close=")">
+					 	  X.${searchType} LIKE CONCAT('%', #{searchKw}, '%')
+					</foreach>
+				</otherwise>
+			</choose>
+			</if>	
+	 </select>
+	 
+	<select id="selectBoardList" resultType="github.hansoryyy.webboard.dto.BoardDTO" parameterType="map">
+		SELECT
+			X.board_no as boardNo,
+			X.title,
+			X.writer,
+			X.hits,
+			DATE_FORMAT(X.write_dt,'%Y-%m-%d') as writeDt,
+			X.likes,
+			X.hates,
+			X.likes - X.hates as vote
+		FROM board_info X 
+		WHERE 1=1
+			<if test='searchType != null and searchType != "" and searchKw != null and searchKw != ""'>
+			AND
+			<choose>
+				<when test="searchType == 'all'">
+					<foreach item="searchKw" index="index" collection="searchKw" open="(" separator="AND"  close=")">
+						  X.title LIKE CONCAT('%', #{searchKw}, '%')OR
+						  X.writer LIKE CONCAT('%', #{searchKw}, '%')OR
+						  X.contents LIKE CONCAT('%', #{searchKw}, '%') 
+					</foreach>
+				</when>
+				<otherwise>
+					<foreach item="searchKw" index="index" collection="searchKw" open="(" separator="AND"  close=")">
+					 	  X.${searchType} LIKE CONCAT('%', #{searchKw}, '%')
+					</foreach>
+				</otherwise>
+			</choose>
+			</if>
+		ORDER BY write_dt DESC
+		LIMIT #{firstRecordIndex}, #{recordCountPerPage}
 		
 	</select>
 	
-	<select id="postView" parameterType="int" resultType="github.hansoryyy.webboard.dto.BoardDTO">
+	<select id="selectBoardView" parameterType="Map" resultType="github.hansoryyy.webboard.dto.BoardDTO">
 		SELECT
-			seq,
-			title,
+			board_no as boardNo,
 			writer,
-			content,
-			create_date as createDate
-		FROM post
+			title,
+			contents,
+			hits,
+			likes,
+			hates,
+			fixed_yn as fixedYn,
+			email,
+			write_dt as writeDt,
+			create_ip as createIp,
+			update_ip as updateIp,
+			update_dt as updateDt,
+			row_state as rowState
+		FROM board_info
 		WHERE
-			seq = #{id}
+			board_no = #{boardNo}
 	
 	</select>
 	
 	<insert id="insertBoard" parameterType="github.hansoryyy.webboard.dto.BoardDTO" keyProperty="boardNo" keyColumn="boardNo" useGeneratedKeys="true">
-		INSERT INTO BOARD_INFO 
+		INSERT INTO board_info 
 		(
 			title, 
 			contents, 
@@ -61,6 +119,25 @@
 			#{createIp}
 		)
 	</insert>
+	
+	<select id="selectUpfilesList" parameterType="Map" resultType="github.hansoryyy.webboard.dto.UpfilesDTO">
+		SELECT
+			upfiles_no as upfilesNo,
+			origin_filename as originFilename,
+			gen_filename as genFilename,
+			board_no as boardNo,
+			create_ip as createIp,
+			create_dt as createDt
+		FROM upfiles
+		WHERE 
+			board_no = #{boardNo}
+	</select>
+	
+	<update id="updateBoardHits" parameterType="Map">
+		UPDATE board_info
+		SET hits = hits + 1
+		WHERE board_no = #{boardNo}
+	</update>
 
 
 
