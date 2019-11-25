@@ -10,12 +10,12 @@
 		db 연결을 담당하는 설정 및 기능들(전화기) 
 	 -->
 	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName" value="org.mariadb.jdbc.Driver"></property>
-		<property name="url" value="jdbc:mariadb://localhost:3306/boarddb"></property>
+		<property name="driverClassName" value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy"></property>
+		<property name="url" value="jdbc:log4jdbc:mariadb://localhost:3306/boarddb"></property>
 		<property name="username" value="${user}"></property>
 		<property name="password" value="${password}"></property>
 	</bean>
-	
+
 	<!--
 		순수한 mybatis 설정 및 기능들
 		db 연결할 수 있는 수단이 제공되어야 함( ref="dataSource") 

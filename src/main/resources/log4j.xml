@@ -10,11 +10,32 @@
 		</layout>
 	</appender>
 	
+	 <appender name="console-infolog" class="org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d %5p %m%n" />
+        </layout>   
+    </appender>
+	
+	
 	<!-- Application Loggers -->
 	<logger name="github.hansoryyy.webboard">
-		<level value="info" />
+		<level value="debug" />
+		<appender-ref ref="console"/>
 	</logger>
 	
+	
+	 <!-- Query Loggers -->
+	 
+	<logger name="jdbc.sqlonly" additivity="false">  
+        <level value="INFO"/>  
+        <appender-ref ref="console-infolog"/>  
+    </logger>
+    
+    <logger name="jdbc.resultsettable" additivity="false">  
+        <level value="INFO"/>  
+        <appender-ref ref="console"/>  
+    </logger>
+
 	<!-- 3rdparty Loggers -->
 	<logger name="org.springframework.core">
 		<level value="info" />
