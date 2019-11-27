@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -49,12 +50,8 @@ import github.hansoryyy.webboard.util.PageInfo;
 public class BoardController {
 	
 	@Autowired IBoardService boardService;
-	
-	private static Logger log = LoggerFactory.getLogger(BoardController.class);
-	
 	@Value("${img.root}")
 	private String rootPath;
-	
 	
 	@RequestMapping(value = "/board/boardList", method = RequestMethod.GET)
 	public String boardList(Model model, @RequestParam Map param, PageInfo pageInfo) {
@@ -81,13 +78,7 @@ public class BoardController {
 		
 		return "board/boardList";
 	}
-	/**
-	 * 
-	 * @param param
-	 * @param pageInfo
-	 * @param currentPageNo
-	 * @return
-	 */
+	
 	@ResponseBody
 	@RequestMapping(value = "/board/boardAjaxList", method = RequestMethod.GET)
 	public Map boardAjaxList(@RequestParam Map param, PageInfo pageInfo, @RequestParam long currentPageNo) {
@@ -117,12 +108,7 @@ public class BoardController {
 		
 		return res;
 	}
-	/**
-	 * 
-	 * @param model
-	 * @param param
-	 * @return
-	 */
+	
 	@RequestMapping(value="/board/boardView", method = RequestMethod.GET)
 	public String boardView(Model model, @RequestParam Map param) {
 		BoardDTO boardInfo = boardService.selectBoardView(param);
@@ -136,40 +122,34 @@ public class BoardController {
 
 	
 	@RequestMapping(value="/board/boardWriteForm", method = RequestMethod.GET)
-	public String boardWriteForm() {
-		//TODO 로그인 기능 구현 다되면 로그인VO정보  writeFrom에 뿌려줘야함 ...		`
+	public String boardWriteForm(HttpSession session) {
+		//TODO 로그인 기능 구현 다되면 로그인VO정보  writeFrom에 뿌려줘야함 ...
+		
+		List<String[]> files = (List) session.getAttribute("aFiles");
+		if(files!=null && files.size()>0) {
+			session.removeAttribute("aFiles");
+		}
+		
 		return "/board/boardWriteForm";
 	}
 	
 	@ResponseBody
 	@RequestMapping(value="/board/doWrite", method = RequestMethod.POST)
 	public String boardWriteForm(MultipartHttpServletRequest req, HttpSession session) throws IOException {
-		//TODO 로그인 기능 구현 다되면 로그인VO정보  writeFrom에 뿌려줘야함 ...	
-		/*
-		 * 
-		 */
-		String title = req.getParameter("title");
-		String content = req.getParameter("content");
-		String email = req.getParameter("email");
-		// List<MultipartFile> files = req.getFiles("file");
-		String ip = req.getRemoteAddr();
-		
 		BoardDTO dto = new BoardDTO();
-		dto.setTitle(title);
-		dto.setContents(content);
-		dto.setEmail(email);
-		// dto.setFiles(files);
-		dto.setCreateIp(ip);
+		dto.setTitle(req.getParameter("title"));
+		dto.setWriter(req.getParameter("writer"));
+		dto.setContents(req.getParameter("content"));
+		dto.setEmail(req.getParameter("email"));
+		dto.setCreateIp(req.getRemoteAddr());
 		
-		List<String[]> imgFiles = null;
+		List<String[]> aFiles = null;
 		if(session.getAttribute("aFiles")!= null) {
-			imgFiles = (List<String[]>) session.getAttribute("aFiles");
-			dto.setFiles(imgFiles);
+			aFiles = (List<String[]>) session.getAttribute("aFiles");
+			dto.setFiles(aFiles);
 		}
-		// dto.setImageFiles(imgFiles);
 		
 		boardService.insertBoard(dto);
-		
 		session.removeAttribute("aFiles");
 		return "success";
 	}
@@ -177,45 +157,54 @@ public class BoardController {
 	@ResponseBody
 	@RequestMapping(value="/board/tempFileUpload", method = RequestMethod.POST)
 	public Object tempFileUpload(MultipartHttpServletRequest req, HttpSession session) throws IOException {
-		MultipartFile file = req.getFile("file");
 		Map res = new HashMap();
+		// TODO MaxUploadSizeExceededException 발생시 ...SimpleMappingExceptionResolver 구현
+		MultipartFile file = req.getFile("file");
+		
 		// TODO 서비스 클래스로 빼냄 FileStorageService
-		// 
 		if(! file.isEmpty() ){
+			long fileSize = file.getSize();
+			if(fileSize>3145728) {
+				res.put("success", false);
+				res.put("message", "[SERVER] 3MB 초과 파일 업로드 오류");
+				return res;
+			}
+			List<String[]> files = (List) session.getAttribute("aFiles");
+			if(files != null && files.size()>2) {
+				res.put("success", false);
+				res.put("message", "[SERVER]업로드 가능한 파일 갯수를 초과하였습니다.");
+				return res;	
+			}
 			
 			SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss_SSS");
 			Date time = new Date();
-			
 			String originName = file.getOriginalFilename();
 			String ext = originName.substring(originName.lastIndexOf('.'));
 			String currentTime = format.format(time);
 			String genFileName = currentTime + (int)(1000000*Math.random()) + ext;
-		
 			
-			// String rootPath = "C:\\Users\\kizuna\\Documents\\uproot";
 			File destFile = new File(rootPath, genFileName);
 			FileOutputStream fos = new FileOutputStream(destFile);
 			IOUtils.copy(file.getInputStream(), fos);
 			
-			List<String[]> files = (List) session.getAttribute("aFiles");
 			if(files == null) {
 				files = new ArrayList<>();
 				session.setAttribute("aFiles", files);
 			}
 			
 			files.add(new String[] {genFileName, originName});
-			res.put("success", true);
-			
 			String imgUrl = req.getContextPath() + "/board/upimg/" + genFileName;
-			res.put("img_url", imgUrl);
+			
+			res.put("success", true);
+			res.put("imgUrl", imgUrl);
 			res.put("length", destFile.length());
 			res.put("fileId", genFileName);
+			res.put("originName", originName);
 		} else {
 			res.put("success", false);
-			res.put("cause", "EMPTY_IMG");
-			
+			res.put("message", "[SERVER]이미지 업로드 오류");
 		}
-		return res;
+		return res;	
 	}
 	
 	@ResponseBody

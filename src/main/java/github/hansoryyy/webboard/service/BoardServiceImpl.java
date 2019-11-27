@@ -27,32 +27,19 @@ public class BoardServiceImpl implements IBoardService {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void insertBoard(BoardDTO dto) throws IOException {
-		// 1. 디비에 글 내용을 기록함 (
 		int boardNo = boardDAO.insertBoard(dto);	//insert된 board_info pk값을 return
-
 		List<String[]> files = dto.getFiles();
-		
-		for(int i=0; i<files.size(); i++) {
-			String[] file = files.get(i);
-
-				
-				// 2.1. upfiles 테이블에 업로드 파일 정보를 저장함
-				SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss_SSS");
-				Date time = new Date();
-				String currentTime = format.format(time);
+		if(files !=null && files.size()>0) {
+			for(int i=0; i<files.size(); i++) {
 				Map tmpMap = new HashMap();
+				String[] file = files.get(i);
 				tmpMap.put("genFilename", file[0]);
 				tmpMap.put("originFilename", file[1]);
 				tmpMap.put("boardNo", boardNo);
 				tmpMap.put("createIp", dto.getCreateIp());
 				boardDAO.insertUpFiles(tmpMap);
-				
-//				File destFile = new File(rootPath, (String)tmpMap.get("genFilename"));
-//				FileOutputStream fos = new FileOutputStream(destFile);
-//				IOUtils.copy(file.getInputStream(), fos);
-
+			}	
 		}
-		// FileUtils.copyFile(srcFile, destFile);
 	}
 	
 	@Override

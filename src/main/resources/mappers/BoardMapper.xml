@@ -89,14 +89,16 @@
 	<insert id="insertBoard" parameterType="github.hansoryyy.webboard.dto.BoardDTO" keyProperty="boardNo" keyColumn="boardNo" useGeneratedKeys="true">
 		INSERT INTO board_info 
 		(
-			title, 
+			title,
+			writer,
 			contents, 
 			email, 
 			create_ip
 		) 
 		values
 		(
-			#{title}, 
+			#{title},
+			#{writer},
 			#{contents}, 
 			#{email}, 
 			#{createIp}

@@ -28,6 +28,8 @@
 	
 	<!--중앙 몸통 시작 -->
 	<div style="padding: 50px; min-height: 863px;">
+	<h1 class="ui header">게시글 상세 내역</h1>
+	<div class="ui divider"></div>
 		<div class="ui segment">
   			<h2 class="ui left floated header">${boardInfo.title}</h2>&nbsp;&nbsp;
   			<span style="float: left;padding-top: 10px;">

@@ -12,6 +12,10 @@
 		$(".dropdown").val(searchType).prop("selected", true);
 	});
 	
+	function fnBoardView(boardNo){
+		location.href="/board/boardView?boardNo=" + boardNo
+	}
+	
 	function fnSerachKw(){
 		var searchType = $(".searchForm select option:selected").val();
 		$("#searchType").val(searchType);
@@ -35,7 +39,7 @@
 						for(cnt ; cnt < res.boardAjaxList.length;cnt++){
 								
 							html += '<tr>';
-							html += '<td>' + res.boardAjaxList[cnt].title + '</td>';
+							html += '<td><a href="javascript:fnBoardView('+res.boardAjaxList[cnt].boardNo +')">' + res.boardAjaxList[cnt].title + '</a></td>';
 							html += '<td>' + res.boardAjaxList[cnt].writer + '</td>';
 							html += '<td style="text-align:center">' + res.boardAjaxList[cnt].hits + '</td>';
 							html += '<td style="text-align:center">' + res.boardAjaxList[cnt].writeDt + '</td>';
@@ -149,7 +153,7 @@
 		   <c:if test="${not empty boardList}">
 			  <c:forEach var="boardList" items="${boardList}" varStatus="status">
 			  	<tr>
-			      <td><a href="/board/boardView?boardNo=${boardList.boardNo}">${boardList.title}</a></td>
+			      <td><a href="javascript:fnBoardView('${boardList.boardNo}');">${boardList.title}</a></td>
 			      <td >${boardList.writer}</td>
 			      <td style="text-align:center">${boardList.hits}</td>
 			      <td style="text-align:center">${boardList.writeDt}</td>

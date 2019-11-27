@@ -40,6 +40,7 @@
 		}
 		
 		e.preventDefault();
+		
 		var data = $('#joinForm').serialize();
 		$.ajax({
 			url : "/member/memberJoin",
@@ -162,6 +163,7 @@
 		$('#email').on('blur',fnEmail);
 		
 		
+		
 		$('#loginPw, #loginPw2').change(function () {
 			var loginPw = $('#loginPw').val();
 			var loginPw2 = $('#loginPw2').val();
@@ -193,10 +195,14 @@
 	<!--상단 고정된 헤더 -->
 	<%@include file="/WEB-INF/views/include/header.jspf" %>
 	<!--중앙 몸통 시작 -->
-	 <div style="padding: 50px; min-height: 737px;">
+
+		
+	 <div style="padding: 50px; min-height: 863px;">
+	 	<h1 class="ui header">회원가입 </h1>
+		<div class="ui divider"></div>
 		<div class="ui main text container">
 			<form class="ui form" id="joinForm">
-				  <h4 class="ui dividing header">회원가입</h4>
+				  <!-- <h4 class="ui dividing header">회원가입</h4> -->
 			      <div class="field">
 			        <label>아이디 <span class="error-msg"></span><span class="success-msg"> - *사용가능한 아이디입니다</span></label>
 		       		 <input type="text" id="loginId" name="loginId" placeholder="아이디 입력" 
