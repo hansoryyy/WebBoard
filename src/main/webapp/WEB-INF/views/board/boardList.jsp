@@ -17,6 +17,10 @@
 	}
 	
 	function fnSerachKw(){
+		if($('#searchKw').val().length < 1){
+			alert('검색어를 입력해주세요.');
+			return;
+		}
 		var searchType = $(".searchForm select option:selected").val();
 		$("#searchType").val(searchType);
 		$("#searchForm").submit(); 
@@ -92,6 +96,9 @@
 </script>
 <style type="text/css">
 	.ui.table thead th {border:1px solid rgba(34, 36, 38, 0.1); text-align:center;}
+	.ui.selection.dropdown {padding:0px 5px 0 5px;}
+	
+}
 </style>
 </head>
 <body>
@@ -100,7 +107,7 @@
 	
 	<!--중앙 몸통 시작 -->
 
-	<div style="padding: 50px; min-height: 863px;">
+	<div class="main-content">
 		<h1 class="ui header">게시판 </h1>
 		<div class="ui divider"></div>
 		

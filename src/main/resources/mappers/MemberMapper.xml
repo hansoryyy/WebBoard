@@ -19,6 +19,7 @@
 				 #{email}
 			)
 	</insert>
+	
 	<select id="memberCheck" parameterType="Map" resultType="int">
 		SELECT
 			COUNT(*)
@@ -38,9 +39,6 @@
 		WHERE
 			login_id = #{loginId} AND
 			login_pw = PASSWORD(#{loginPasswd})
-			
-			
-	
 	</select>
 
 

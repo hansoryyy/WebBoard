@@ -13,8 +13,8 @@
 	<%@include file="/WEB-INF/views/include/header.jspf" %>
 	
 	
-	<div>
-		<img src="/resources/img/home.jpg" style="width:100%; height:900px; ">
+	<div style="min-height: 898px;">
+		<img src="/resources/img/home.jpg" style="width:100%;height:898px">
 	</div>
 	
 	

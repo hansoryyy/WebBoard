@@ -27,7 +27,7 @@
 	<%@include file="/WEB-INF/views/include/header.jspf" %>
 	
 	<!--중앙 몸통 시작 -->
-	<div style="padding: 50px; min-height: 863px;">
+	<div class="main-content">
 	<h1 class="ui header">게시글 상세 내역</h1>
 	<div class="ui divider"></div>
 		<div class="ui segment">
@@ -43,26 +43,25 @@
   			</span>
   			<c:if test="${not empty upfilesList}">
 	  			<div class="ui clearing divider"></div>
-	  			<i class="paperclip icon"></i>
 	  			<c:forEach var="upfilesList" items="${upfilesList}">
-	  				<span style="margin-right: 10px;"><a href="#link" onclick="javascript:fnUpfilesDownload('${upfilesList.upfilesNo}');">${upfilesList.originFilename},</a></span>
+	  				<i class="paperclip icon"></i>&emsp;<span style="margin-right: 10px;"><a href="#link" onclick="javascript:fnUpfilesDownload('${upfilesList.upfilesNo}');">${upfilesList.originFilename}</a></span><br/>
 	  			</c:forEach>
 	  		</c:if>
   			
   			<div class="ui clearing divider"></div>
-  				<div class="ui internally celled grid">
+  				<div class="ui internally celled grid" style="min-height: 500px;">
   					<div class="row">
   						<div class="fifteen wide column">
   							<c:out value="${boardInfo.contents}" escapeXml="false"/>
   						</div>
-  						<div class="one wide column" style="text-align:center;">
+<%--   					<div class="one wide column" style="text-align:center;">
   							<div>
 	      						<p><i class="thumbs up outline icon" title="좋아요" ></i></p>
 	      						<p style="margin-bottom:20px;font-size:40px;height:60px;padding-left: 12px;color:rgba(0, 0, 0, 0.4)"><c:set var="vote" value="${boardInfo.likes - boardInfo.hates}"/>${vote}</p>
 	      						<p style="margin-bottom: 30px;"><i class="thumbs down outline icon" title="싫어요"></i></p>
 	      						<p><i class="bookmark outline icon"></i></p>
  							</div>   					
-    					</div>
+    					</div> --%>
   					</div>
   				</div>
   			<div class="ui clearing divider"></div>

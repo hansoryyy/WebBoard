@@ -34,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import github.hansoryyy.webboard.dto.BoardDTO;
+import github.hansoryyy.webboard.dto.MemberDTO;
 import github.hansoryyy.webboard.dto.UpfilesDTO;
 import github.hansoryyy.webboard.service.IBoardService;
 import github.hansoryyy.webboard.util.PageInfo;
@@ -55,7 +56,7 @@ public class BoardController {
 	
 	@RequestMapping(value = "/board/boardList", method = RequestMethod.GET)
 	public String boardList(Model model, @RequestParam Map param, PageInfo pageInfo) {
-		pageInfo.setRecordCountPerPage(15);			//페이지당 row 갯수
+		pageInfo.setRecordCountPerPage(13);			//페이지당 row 갯수
 		pageInfo.setCurrentPageNo(1);				//현재 페이지 번호
 		pageInfo.setPageSize(5);					//하단 페이지 리스트에 표현되는 페이지 갯수
 		pageInfo.init(param);
@@ -84,7 +85,7 @@ public class BoardController {
 	public Map boardAjaxList(@RequestParam Map param, PageInfo pageInfo, @RequestParam long currentPageNo) {
 		
 		//Map param = new HashMap();
-		pageInfo.setRecordCountPerPage(15);			//페이지당 row 갯수
+		pageInfo.setRecordCountPerPage(13);			//페이지당 row 갯수
 		pageInfo.setCurrentPageNo(currentPageNo);	//현재 페이지 번호
 		pageInfo.setPageSize(5);					//하단 페이지 리스트에 표현되는 페이지 갯수
 		pageInfo.init(param);
@@ -122,13 +123,18 @@ public class BoardController {
 
 	
 	@RequestMapping(value="/board/boardWriteForm", method = RequestMethod.GET)
-	public String boardWriteForm(HttpSession session) {
+	public String boardWriteForm(Model model, HttpSession session) {
 		//TODO 로그인 기능 구현 다되면 로그인VO정보  writeFrom에 뿌려줘야함 ...
+		MemberDTO loginInfo = (MemberDTO)session.getAttribute("loginInfo");
+		if(loginInfo != null) {
+			model.addAttribute("loginInfo", loginInfo );
+		}
 		
 		List<String[]> files = (List) session.getAttribute("aFiles");
 		if(files!=null && files.size()>0) {
 			session.removeAttribute("aFiles");
 		}
+		
 		
 		return "/board/boardWriteForm";
 	}

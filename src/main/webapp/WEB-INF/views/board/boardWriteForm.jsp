@@ -13,6 +13,7 @@
 	<!-- summernote js, css -->
 
 	<script type="text/javascript">
+		
 	
 		var errors = {
 			INVALID_title : '   -제목을 입력해주세요',
@@ -26,6 +27,55 @@
 				nickname: null,
 				email : null,
 				summernote : null
+		}
+		
+		function fnBoardList(){
+			location.href="/board/boardList"
+		}
+		
+		function deleteUpfile(fileElem) {
+			var fileId = $(fileElem).attr("id");
+			console.log(fileId)
+			$.ajax({
+				data : {fileId : fileId},
+				type : "POST",
+				url : "/board/tempFileDelete",
+				success : function (data){
+					if (data.success) {
+						$(fileElem).remove();
+					}
+				}
+			})
+		}
+		
+		function putAttachFile(imgUrl, fileSize, fileId, fileName){
+			$('#file-list').append('<div id="' + fileId + '"><span>'+fileName+' ( ' + parseInt(fileSize/1024) +' KB )</span><a class= "detachBtn" style="cursor:pointer">[삭제]</a></div>');
+		}
+		
+		function tempFileUpload(file, successCallback){
+			var fileFormData = new FormData();
+			fileFormData.append('file', file); // [ img, pdf]
+			
+			$.ajax({
+				data : fileFormData,
+				type : "POST",
+				url : "/board/tempFileUpload",
+				enctype:"multipart/form-data",
+				cache : false,
+				contentType : false,
+				processData : false,
+				success : function (data){
+					if (data.success && successCallback) {
+						var url = data.imgUrl;
+						var fileId = data.fileId;
+						var fileSize = data.length;
+						var fileName = data.originName;
+						successCallback(url, fileSize, fileId, fileName);
+					}else if(!data.success){					
+							alert(data.message);
+					}
+				}
+			})
 		}
 	
 		function _disableForm() {
@@ -75,8 +125,13 @@
 						valid[propName] = false;
 						return;
 					}
-				}else{
-	     			var text = $("#summernote").summernote("code").replace(/&nbsp;|<\/?[^>]+(>|$)/g, "").trim();
+				}else{ // data-rule(정규식) 값이 없으면 단순 공백체크만함
+					if(propName == 'summernote'){
+						var text = $("#summernote").summernote("code").replace(/&nbsp;|<\/?[^>]+(>|$)/g, "").trim();
+					}else{
+						var text = $el.val().replace(/&nbsp;|<\/?[^>]+(>|$)/g, "").trim();
+					}
+	     			
 					if (text.length == 0) {
 							var errorCode = $el.data('error');
 							errorCallback(errorCode);
@@ -174,6 +229,8 @@
 			$('#summernote') );
 		};
 		
+		
+		
 		$(document).ready(function(){
 			
 			$('#summernote').summernote({
@@ -231,56 +288,7 @@
 			});
 			
 		}); //$(document).ready
-		
-		function fnBoardList(){
-			location.href="/board/boardList"
-		}
-		
-		function deleteUpfile(fileElem) {
-			var fileId = $(fileElem).attr("id");
-			console.log(fileId)
-			$.ajax({
-				data : {fileId : fileId},
-				type : "POST",
-				url : "/board/tempFileDelete",
-				success : function (data){
-					if (data.success) {
-						$(fileElem).remove();
-					}
-				}
-			})
-		}
-		
-		function putAttachFile(imgUrl, fileSize, fileId, fileName){
-			$('#file-list').append('<div id="' + fileId + '"><span>'+fileName+' ( ' + parseInt(fileSize/1024) +' KB )</span><a class= "detachBtn" style="cursor:pointer">[삭제]</a></div>');
-		}
-		
-		function tempFileUpload(file, successCallback){
-			var fileFormData = new FormData();
-			fileFormData.append('file', file); // [ img, pdf]
 			
-			$.ajax({
-				data : fileFormData,
-				type : "POST",
-				url : "/board/tempFileUpload",
-				enctype:"multipart/form-data",
-				cache : false,
-				contentType : false,
-				processData : false,
-				success : function (data){
-					if (data.success && successCallback) {
-						var url = data.imgUrl;
-						var fileId = data.fileId;
-						var fileSize = data.length;
-						var fileName = data.originName;
-						successCallback(url, fileSize, fileId, fileName);
-					}else if(!data.success){					
-							alert(data.message);
-					}
-				}
-			})
-		}
-		
 	</script>
 	
 	<style type="text/css">
@@ -298,7 +306,7 @@
 	<%@include file="/WEB-INF/views/include/header.jspf" %>
 	
 	<!--중앙 몸통 시작 -->
-	<div style="padding: 50px;">
+	<div class="main-content">
 	<h1 class="ui header">게시글 작성 </h1>
 	<div class="ui divider"></div>
 			<div class="ui form">
@@ -306,26 +314,22 @@
 			  	<div class="field">
 	  				<label>*제목  <span class="error-msg"> -제목을 입력해주세요</span><span class="success-msg"> -제목 입력 OK</span></label>
 			       	 <input type="text" id="title" name="title" placeholder="제목 입력" 
-			       	 	data-rule="^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9|\*]+$"
 			       	 	data-error="INVALID_TITLE">
 	 			</div>
-	 			<div class="field">
+	 			<div class="field">															
 			        <label>*작성자  <span class="error-msg"> -작성자을 입력해주세요</span><span class="success-msg"> -작성자 입력OK</span></label>
-			       	 <input type="text" id="nickname" name="writer" placeholder="작성자 입력" 
-			       	 	data-rule="^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9|\*]+$"
-			       	 	data-error="INVALID_NICK">
+			       	 <input type="text" id="nickname" name="writer" placeholder="작성자 입력" value="<c:out value="${loginInfo.nickname}"/>" data-rule="^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9|\*]+$" data-error="INVALID_NICK">
 			      </div>
 				  <div class="field">
 				    <label>*이메일  <span class="error-msg">-올바른 이메일을 입력해주세요</span><span class="success-msg"> - 이메일 입력 OK</span></label>
-					 <input type="text" id= "email" name="email" placeholder="이메일 입력" 
+					 <input type="text" id= "email" name="email" placeholder="이메일 입력"  value="${loginInfo.email}"
 					 	data-rule="^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$"
 					 	data-error="INVALID_EMAIL">
 				  </div>
 		  		<div class="field">
 		    		 <label>*내용<span class="error-msg"></span><span class="success-msg"> - 내용 입력 OK</span></label>
 		   			 <textarea id="summernote" name="content" placeholder="내용을 입력하세요..."
-		   			 	name="comtent" 
-					 	
+		   			 	name="comtent" 					 	
 					 	data-error="INVALID_CONTENT"
 		   			 ></textarea>
 		  		</div>

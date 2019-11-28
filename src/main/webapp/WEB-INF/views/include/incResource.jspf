@@ -19,7 +19,30 @@
     <link rel="stylesheet" type="text/css" href="/resources/semantic/components/segment.css">
     <link rel="stylesheet" type="text/css" href="/resources/semantic/components/dropdown.css">
     <link rel="stylesheet" type="text/css" href="/resources/semantic/components/icon.css">
+    <link rel="stylesheet" type="text/css" href="/resources/css/common.css">
     
     <script type="text/javascript">
     	var reqUrl = '${requestScope['javax.servlet.forward.request_uri']}';
+    	var loginInfo = '${loginInfo}';
+    	var loginUser = {};
+    	
+    	if(loginInfo.length > 0){ 		//login 후 
+    		loginUser = {
+    			loginYn : 'Y',
+    			loginId : '${loginInfo.loginId}',
+    			nickname : '${loginInfo.nickname}',
+    			email : '${loginInfo.email}',
+    		}
+ 			
+ 		}else{							//login 전
+ 			loginUser = {
+       			loginYn : 'Y',
+       			loginId : '${loginInfo.loginId}',
+       			nickname : '${loginInfo.nickname}',
+       			email : '${loginInfo.email}',  			
+    		}
+ 			
+ 		}
+    	
+    	
     </script>

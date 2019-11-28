@@ -1,14 +1,17 @@
   <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+  <style>
+  	#footer-info {text-align: left;}
+  </style>
   <div class="ui inverted vertical footer segment" style="">
     <div class="ui center aligned container">
       <div class="ui stackable inverted divided grid">
-        <div class="three wide column">
+<!--         <div class="three wide column">
           <h4 class="ui inverted header">Group 1</h4>
           <div class="ui inverted link list">
             <a href="#" class="item">Link One</a>
             <a href="#" class="item">Link Two</a>
             <a href="#" class="item">Link Three</a>
-            <!-- <a href="#" class="item">Link Four</a> -->
+            <a href="#" class="item">Link Four</a>
           </div>
         </div>
         <div class="three wide column">
@@ -26,12 +29,14 @@
             <a href="#" class="item">Link One</a>
             <a href="#" class="item">Link Two</a>
             <a href="#" class="item">Link Three</a>
-<!--             <a href="#" class="item">Link Four</a> -->
+            <a href="#" class="item">Link Four</a>
           </div>
-        </div>
-        <div class="seven wide column">
-          <h4 class="ui inverted header">Footer Header</h4>
-          <p>Extra space for a call to action inside the footer that could help re-engage users.</p>
+        </div> -->
+        <div class="seven wide column" id="footer-info">
+          <h4 class="ui inverted header">김한솔</h4>
+          <p>TEL.&emsp;010 - 2765 - 7499</p>
+          <p>EMAIL.&emsp;hansoryyy@gmail.com</p>
+          <p>GIT HUB.&emsp;<a href="https://github.com/hansoryyy" target="_blank">https://github.com/hansoryyy</a></p>
         </div>
       </div>
       <!-- <div class="ui inverted section divider"></div> -->
