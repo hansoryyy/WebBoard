@@ -58,19 +58,7 @@
 		return false;
 	}
 	
-/* 	function _enableForm(){
-		for( var k in valid ) { 
-			if ( !valid[k] ) {
-				// alert ('폼 검증해주세요');
-				return;
-			}
-		}
-		$('#btn_join').on('click', sendForm);
-	}
-	
-	function _disableForm() {
-		$('#btn_join').off('click');
-	} */
+
 	
 	function disableForm(selector, errorCode) {
 		// 'DUP_VALUE', 'INVALID_FORM', 'DIFF_PW'
@@ -174,6 +162,11 @@
 			return;
 		}
 		if( loginPw.length > 5 && loginPw !== loginPw2 ){
+			if(loginPw.length == loginPw2.length && loginPw != loginPw2 ){
+				disableForm('#loginPw2', 'DIFF_PW');
+				valid['password'] = false;
+				return;
+			}
 			disableForm('#loginPw');
 			disableForm('#loginPw2', 'DIFF_PW');
 			valid['password'] = false;
@@ -186,7 +179,6 @@
 			valid['password'] = true;	
 			return;
 		}
-		
 		disableForm('#loginPw', 'SHORT_PW');
 		disableForm('#loginPw2', 'DIFF_PW');
 		valid['password'] = false;
