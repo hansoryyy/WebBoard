@@ -11,8 +11,10 @@
 			
 		});
 	
-		function fnUpfilesDownload(upfilesNo){
-			alert(upfilesNo + '  준비중입니다.');	
+		function fnUpfilesDownload(upfilesNo, genFilename, originFilename){
+			console.log(upfilesNo, genFilename, originFilename);
+			location.href = "/board/fileDownload?upfilesNo=" + upfilesNo +"&genFilename=" + genFilename + "&originFilename=" + originFilename ;
+			
 		}
 	
 	</script>
@@ -44,7 +46,13 @@
   			<c:if test="${not empty upfilesList}">
 	  			<div class="ui clearing divider"></div>
 	  			<c:forEach var="upfilesList" items="${upfilesList}">
-	  				<i class="paperclip icon"></i>&emsp;<span style="margin-right: 10px;"><a href="#link" onclick="javascript:fnUpfilesDownload('${upfilesList.upfilesNo}');">${upfilesList.originFilename}</a></span><br/>
+	  				<i class="paperclip icon"></i>&emsp;
+	  				<span style="margin-right: 10px;">
+		  				<a href="#link" onclick="javascript:fnUpfilesDownload('${upfilesList.upfilesNo}', '${upfilesList.genFilename}','${upfilesList.originFilename}');">
+		  					${upfilesList.originFilename}
+		  				</a>
+		  			</span>
+		  			<br/>
 	  			</c:forEach>
 	  		</c:if>
   			

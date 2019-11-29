@@ -37,6 +37,7 @@ import github.hansoryyy.webboard.dto.BoardDTO;
 import github.hansoryyy.webboard.dto.MemberDTO;
 import github.hansoryyy.webboard.dto.UpfilesDTO;
 import github.hansoryyy.webboard.service.IBoardService;
+import github.hansoryyy.webboard.util.FileDownloadUtil;
 import github.hansoryyy.webboard.util.PageInfo;
 /**
  * 게시판 요청을 담당하는 컨트롤로
@@ -256,5 +257,21 @@ public class BoardController {
 			response.sendError(404);
 		}
 	}
+	
+	@RequestMapping(value="/board/fileDownload", method = RequestMethod.GET)
+	public void fileDownload (@RequestParam int upfilesNo, 
+							  @RequestParam String genFilename, 
+							  @RequestParam String originFilename,
+							  HttpServletResponse res,
+							  HttpServletRequest req){
+
+			try {
+				FileDownloadUtil fileDown = new FileDownloadUtil(); //파일다운로드 객체생성
+				fileDown.filDown(req, res, rootPath , "/"+genFilename, originFilename); //파일다운로드 			
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+	}
+	
 		
 }
