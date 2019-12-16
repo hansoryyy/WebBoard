@@ -1,5 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<style>
+ #visitor {cursor:help;position: absolute;right: 0;} 
+</style>
   <div class="ui fixed inverted menu">
     <div class="ui container">
       <a href="/" class="header item">
@@ -15,6 +18,9 @@
         <a href="javascript:alert('준비중입니다');" class="item">마이페이지</a>      
       </c:if>
       	<a href="/board/boardList" class="item">게시판</a>
+      	<a class="item" id="visitor" title="오늘 방문자 수 | 총 방문자 수">TODAY : ${todayVisitCount} &emsp;|&emsp; TOTAL : ${totalVisitCount}</a>
+	</div>
+      	
       	
 <!--  <div class="ui simple dropdown item">
         Dropdown <i class="dropdown icon"></i>

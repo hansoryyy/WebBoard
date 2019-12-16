@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="VisitMapper">
+
+	  <insert id="insertVisitor" parameterType="github.hansoryyy.webboard.dto.VisitDTO">
+            INSERT
+            INTO visit
+            (
+                visit_ip,
+            <if test="visitRefer != null and visitRefer !=''">
+                visit_refer,
+		    </if>
+				visit_agent
+            )
+            VALUES
+            (
+                #{visitIp},
+                <if test="visitRefer != null and visitRefer !=''">
+                #{visitRefer},
+                </if>
+                #{visitAgent}
+            )
+        </insert>
+        
+        <select id="selectTotalVisitCount" resultType="integer">
+        	SELECT COUNT(*)
+        	FROM visit
+        </select>
+        
+        <select id="selectTodayVisitCount" resultType="integer">
+        	SELECT COUNT(*)
+			FROM visit
+			WHERE DATE(visit_date) = DATE(NOW());
+        </select>
+
+
+</mapper>
