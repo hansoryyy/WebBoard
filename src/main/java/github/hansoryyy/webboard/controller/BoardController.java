@@ -126,10 +126,10 @@ public class BoardController {
 	@RequestMapping(value="/board/boardWriteForm", method = RequestMethod.GET)
 	public String boardWriteForm(Model model, HttpSession session) {
 		//TODO 로그인 기능 구현 다되면 로그인VO정보  writeFrom에 뿌려줘야함 ...
-		MemberDTO loginInfo = (MemberDTO)session.getAttribute("loginInfo");
-		if(loginInfo != null) {
-			model.addAttribute("loginInfo", loginInfo );
-		}
+		/*
+		 * MemberDTO loginInfo = (MemberDTO)session.getAttribute("loginInfo");
+		 * if(loginInfo != null) { model.addAttribute("loginInfo", loginInfo ); }
+		 */
 		
 		List<String[]> files = (List) session.getAttribute("aFiles");
 		if(files!=null && files.size()>0) {
@@ -170,19 +170,20 @@ public class BoardController {
 		
 		// TODO 서비스 클래스로 빼냄 FileStorageService
 		if(! file.isEmpty() ){
+			/*
 			long fileSize = file.getSize();
-			if(fileSize>3145728) {
+			if(fileSize>100*1024) {
 				res.put("success", false);
 				res.put("message", "[SERVER] 3MB 초과 파일 업로드 오류");
 				return res;
 			}
+			*/
 			List<String[]> files = (List) session.getAttribute("aFiles");
 			if(files != null && files.size()>2) {
 				res.put("success", false);
 				res.put("message", "[SERVER]업로드 가능한 파일 갯수를 초과하였습니다.");
 				return res;	
 			}
-			
 			SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss_SSS");
 			Date time = new Date();
 			String originName = file.getOriginalFilename();
