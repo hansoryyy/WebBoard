@@ -10,8 +10,8 @@
 		db 연결을 담당하는 설정 및 기능들(전화기) 
 	 -->
 	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName" value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy"></property>
-		<property name="url" value="jdbc:log4jdbc:mariadb://localhost:3306/boarddb"></property>
+		<property name="driverClassName" value="${className}"></property>
+		<property name="url" value="${url}"></property>
 		<property name="username" value="${user}"></property>
 		<property name="password" value="${password}"></property>
 	</bean>
@@ -37,7 +37,9 @@
 	<context:property-placeholder location="classpath:*.properties"/>
 	
 	<context:component-scan 
-		base-package="github.hansoryyy.webboard.config, github.hansoryyy.webboard.service, github.hansoryyy.webboard.dao">
+		base-package="github.hansoryyy.webboard.config, github.hansoryyy.webboard.service, github.hansoryyy.webboard.dao, github.hansoryyy.webboard.listener">
 	</context:component-scan>
+	
+	
 	
 </beans>
