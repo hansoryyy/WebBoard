@@ -74,8 +74,19 @@
 					}else if(!data.success){					
 							alert(data.message);
 					}
+				},
+				error : function(xhr, status, err){
+					console.log(xhr);
+					console.log(status);
+					console.log(err);
+					var msg = xhr.responseJSON ? xhr.responseJSON.cause : "TOO_BIG";
+					if(msg=='TOO_BIG'){
+						alert("파일이 너무큽니다.");
+						
+					}
+					
 				}
-			})
+			});
 		}
 	
 		function _disableForm() {
@@ -266,9 +277,9 @@
 				 	fileSize = file.size,
 				 	idx = $(".file").index(this);
 				
- 				if(fileSize > 3145728){ //3MB = 3145728 BYTES
+/*  				if(fileSize > 3145728){ //3MB = 3145728 BYTES
 					alert('3MB 미만의 파일만 업로드 부탁드립니다.')
-				} 
+				}  */
 				
 				tempFileUpload(file, putAttachFile);
 	        });
@@ -318,11 +329,11 @@
 	 			</div>
 	 			<div class="field">															
 			        <label>*작성자  <span class="error-msg"> -작성자을 입력해주세요</span><span class="success-msg"> -작성자 입력OK</span></label>
-			       	 <input type="text" id="nickname" name="writer" placeholder="작성자 입력" value="<c:out value="${loginInfo.nickname}"/>" data-rule="^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9|\*]+$" data-error="INVALID_NICK">
+			       	 <input type="text" id="nickname" name="writer" placeholder="작성자 입력" value="" data-rule="^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9|\*]+$" data-error="INVALID_NICK">
 			      </div>
 				  <div class="field">
 				    <label>*이메일  <span class="error-msg">-올바른 이메일을 입력해주세요</span><span class="success-msg"> - 이메일 입력 OK</span></label>
-					 <input type="text" id= "email" name="email" placeholder="이메일 입력"  value="${loginInfo.email}"
+					 <input type="text" id= "email" name="email" placeholder="이메일 입력"  value=""
 					 	data-rule="^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$"
 					 	data-error="INVALID_EMAIL">
 				  </div>
@@ -355,9 +366,12 @@
 				<button class="ui ui button" id="cancel" onclick="javascript:fnBoardList();">돌아가기</button>
 			</div>
 	</div>
-	
 	<!--하단고정된 푸터 -->
 	<%@include file="/WEB-INF/views/include/footer.jspf" %>
 	
 </body>
+<script>
+	$("#email").val(loginUser.email);
+	$("#nickname").val(loginUser.nickname);
+</script>
 </html>

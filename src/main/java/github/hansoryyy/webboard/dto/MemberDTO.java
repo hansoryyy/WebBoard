@@ -6,11 +6,27 @@ package github.hansoryyy.webboard.dto;
  *
  */
 public class MemberDTO {
-	private int seq;
+	private int seq; // defasult = null;
 	private String loginId;
 	private String loginPw;
 	private String nickname;
 	private String email;
+	private String joinChannel = "N";
+	private String accessToken;
+	private String refreshToken;
+	
+	public String getAccessToken() {
+		return accessToken;
+	}
+	public void setAccessToken(String accessToken) {
+		this.accessToken = accessToken;
+	}
+	public String getRefreshToken() {
+		return refreshToken;
+	}
+	public void setRefreshToken(String refreshToken) {
+		this.refreshToken = refreshToken;
+	}	
 	public int getSeq() {
 		return seq;
 	}
@@ -41,7 +57,12 @@ public class MemberDTO {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
+	public String getJoinChannel() {
+		return joinChannel;
+	}
+	public void setJoinChannel(String joinChannel) {
+		this.joinChannel = joinChannel;
+	}
 	@Override
 	public String toString() {
 		return "MemberDTO [seq=" + seq + ", loginId=" + loginId + ", loginPw=" + loginPw + ", nickname=" + nickname

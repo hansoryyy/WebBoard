@@ -32,7 +32,6 @@ public class MemberController {
 	
 		Map<String, Object> res = new HashMap<>();
 		res.put("success", true);
-		res.put("user", dto);
 		
 		return res;
 	}

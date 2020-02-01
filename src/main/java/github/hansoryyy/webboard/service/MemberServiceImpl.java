@@ -17,7 +17,6 @@ public class MemberServiceImpl implements IMemberService {
 	
 	@Override
 	public void memberJoin(MemberDTO dto) {
-		// String encryptionPw = AES256Util.encrypt(dto.getLoginPw());
 		String pw = enc.encrypt(dto.getLoginPw());
 		dto.setLoginPw(pw);
 		memberDAO.memberJoin(dto);

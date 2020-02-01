@@ -16,14 +16,14 @@ public class MemberDAO {
 	@Autowired SqlSession session;
 	
 	public void memberJoin(MemberDTO dto) {
-		session.insert("memberJoin", dto);
+		session.insert("MemberMapper.memberJoin", dto);
 	}
 
 	public int checkMmember(String prop, String value) {
 		Map<String, Object> param = new HashMap<>();
 		param.put("prop", Util.camelToSnake(prop)); // lginId -> login_id
 		param.put("value", value);
-		int cnt = session.selectOne("memberCheck", param);
+		int cnt = session.selectOne("MemberMapper.memberCheck", param);
 		return cnt;
 	}
 	
@@ -35,7 +35,12 @@ public class MemberDAO {
 		Map<String, Object> param = new HashMap<>();
 		param.put("loginId", loginId); // lginId -> login_id
 		param.put("loginPasswd", loginPasswd);
-		MemberDTO dto = session.selectOne("selectLoginInfo", param);
+		MemberDTO dto = session.selectOne("MemberMapper.selectLoginInfo", param);
 		return dto;
+	}
+
+	public MemberDTO findMember(MemberDTO dto) {
+		MemberDTO member = session.selectOne("MemberMapper.findMember", dto);
+		return member;
 	}
 }

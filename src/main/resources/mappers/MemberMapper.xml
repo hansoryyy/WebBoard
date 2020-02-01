@@ -9,14 +9,21 @@
 				login_id,
 				login_pw,
 				nickname,
-				email
+				email,
+				join_channel,
+				access_token,
+				refresh_token
 			) 
 		values
 			(
 				 #{loginId},
 				 PASSWORD(#{loginPw}),
 				 #{nickname},
-				 #{email}
+				 #{email},
+				 #{joinChannel},
+				 #{accessToken},
+				 #{refreshToken}
+				 
 			)
 	</insert>
 	
@@ -39,6 +46,17 @@
 		WHERE
 			login_id = #{loginId} AND
 			login_pw = PASSWORD(#{loginPasswd})
+	</select>
+	
+	<select id ="findMember" parameterType="github.hansoryyy.webboard.dto.MemberDTO" resultType = "github.hansoryyy.webboard.dto.MemberDTO">
+		SELECT
+			*
+		FROM
+			member
+		WHERE
+			email=#{email}
+		AND join_channel=#{joinChannel}
+			
 	</select>
 
 

@@ -23,7 +23,7 @@
     
     <script type="text/javascript">
     	var reqUrl = '${requestScope['javax.servlet.forward.request_uri']}';
-    	var loginInfo = '${loginInfo}';
+    	var loginInfo = '${loginInfo.loginId}';
     	var loginUser = {};
     	
     	if(loginInfo.length > 0){ 		//login 후 
@@ -36,7 +36,7 @@
  			
  		}else{							//login 전
  			loginUser = {
-       			loginYn : 'Y',
+       			loginYn : 'N',
        			loginId : '${loginInfo.loginId}',
        			nickname : '${loginInfo.nickname}',
        			email : '${loginInfo.email}',  			
